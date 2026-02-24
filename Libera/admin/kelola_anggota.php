@@ -1,99 +1,108 @@
+<?php
+include '../config/koneksi.php';
+
+// Ambil data anggota
+$query = "SELECT * FROM anggota ORDER BY nama ASC";
+$result = mysqli_query($koneksi, $query);
+
+if (!$result) {
+    die("Query error: " . mysqli_error($koneksi));
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/feather-icons"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&family=Poppins:wght@100..900&display=swap" rel="stylesheet">
-    <title>libera kelola anggota</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100..900&display=swap" rel="stylesheet">
+    <title>Libera Kelola Anggota</title>
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+    </style>
 </head>
-<body>
-    <div class="container">
-        <div class="fixed left-0 top-0 h-screen w-60 p-6 flex flex-col gap-8 bg-[#fff] shadow-lg z-10">
-            <nav>
-                <img src="../resources/img/logo.png" alt="Logo">
-            </nav>
-            <nav class="mt-10 bg-white gap-3 p-2 rounded-lg flex items-center hover:bg-gray-100">
-                <i data-feather="home" class="w-5 h-5"></i>
-                <a class="text-black" href="../admin/dashboard.php">Dashboard</a>
-            </nav>
-            <nav class="bg-white gap-3 p-2 rounded-lg flex items-center hover:bg-gray-100">
-                <i data-feather="users" class="w-5 h-5"></i>
-                <a class="text-black" href="../admin/kelola_anggota.php">kelola anggota</a>
-            </nav>
-            <nav class="bg-white gap-3 p-2 rounded-lg flex items-center hover:bg-gray-100">
-                <i data-feather="book" class="w-5 h-5"></i>
-                <a class="text-black" href="../admin/kelola_data_buku.php">kelola data buku</a>
-            </nav>
-            <nav class="bg-white gap-3 p-2 rounded-lg flex items-center hover:bg-gray-100">
-                <i data-feather="file-text" class="w-5 h-5"></i>
-                <a class="text-black" href="../admin/transaksi.php">transaksi</a>
-            </nav>
-            <nav class="mt-auto bg-white gap-3 p-2 rounded-lg flex items-center">
-                <i data-feather="settings" class="w-5 h-5"></i>
-            </nav>
-        </div>
-    </div>
-</div>
-<section>   
-        <div class="ml-60 p-4 justify-between flex items-center bg-[#fFF] shadow-lg">
-            <h1 class="font-bold uppercase tracking-wide"></h1>
-            <div class="flex items-center gap-4">
-                <span class="text-sm font-medium">Admin Libera</span>
-                <img src="../resources/img/hapidd.png" alt="Admin" class="w-8 h-8 rounded-full border">
+
+<body class="bg-[#B0FFFA]">
+    <?php include 'partials/sidebar.php'; ?>
+
+    <main class="ml-60 p-4 min-h-screen">
+        <section>
+            <div class="bg-gradient-to-r from-blue-600 to-blue-500 p-8 rounded-2xl shadow-lg text-white mb-8">
+                <h2 class="text-3xl font-bold mb-2">Kelola Anggota</h2>
+                <p class="text-blue-100 opacity-90">
+                    Manajemen data siswa dan keanggotaan perpustakaan Libera.
+                </p>
             </div>
-        </div>
-    </section>
-    <section class="ml-60 p-8">
-        <h2 class="font-bold text-2xl text-gray-800">Kelola Anggota</h2>
-        <br>
-        <div>
-            <div class="flex items-center gap-3 bg-blue-500 text-white p-2 px-4 rounded-lg hover:bg-blue-700 cursor-pointer w-fit justify-center transition shadow-md">
-                <i data-feather="plus" class="w-5 h-5"></i>
-                <a href="../admin/tambah_anggota.php">tambah anggota</a>
+
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold text-gray-800">DAFTAR ANGGOTA</h2>
+                <a href="../admin/tambah_anggota.php"
+                    class="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-all shadow-md hover:shadow-lg text-sm">
+                    <i data-feather="plus" class="w-4 h-4"></i>
+                    Tambah Anggota
+                </a>
             </div>
-        </div>
-        <div class="mt-8 w-full overflow-hidden rounded-lg shadow-sm border border-gray-200">
-            <table class="w-full table-auto border-collapse">
-                <thead class="bg-gray-100">
-                    <tr>
-                        <th class="p-4 border ">ID Anggota</th>
-                        <th class="p-4 border">Nama</th>
-                        <th class="p-4 border">kelas</th>
-                        <th class="p-4 border">status</th>
-                        <th class="p-4 border">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                   <?php
-                    include '../config/koneksi.php';
 
-                    $query = "SELECT * FROM anggota";
-                    $result = mysqli_query($koneksi, $query);
-                    
-                    if (!$result) {
-                        die("Query error: " . mysqli_error($koneksi));
-                    }
+            <div class="mt-4 relative overflow-hidden bg-blue-300 shadow-md rounded-2xl border border-blue-200">
+                <table class="w-full text-sm text-left text-gray-600">
+                    <thead class="text-xs uppercase bg-blue-600 text-white border-b border-gray-200">
+                        <tr>
+                            <th class="px-6 py-4 font-bold text-center">No</th>
+                            <th class="px-6 py-4 font-bold">Nama Lengkap</th>
+                            <th class="px-6 py-4 font-bold">Kelas</th>
+                            <th class="px-6 py-4 font-bold text-center">Status</th>
+                            <th class="px-6 py-4 font-bold text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100 bg-white">
+                        <?php
+                        $no = 1;
+                        while ($data = mysqli_fetch_assoc($result)) {
+                            // Logika warna badge status (Sama dengan gaya Transaksi)
+                            $status_class = ($data['status'] == 'aktif') ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600';
+                        ?>
+                            <tr class="hover:bg-blue-50/50 transition-colors">
+                                <td class="px-6 py-4 text-center font-medium text-gray-400">
+                                    <?php echo $no++; ?>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="font-semibold text-gray-700"><?php echo $data['nama']; ?></div>
+                                </td>
+                                <td class="px-6 py-4 font-medium text-gray-600">
+                                    <?php echo $data['kelas']; ?>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase <?php echo $status_class; ?>">
+                                        <?php echo $data['status']; ?>
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <a href="edit_anggota.php?nama=<?php echo urlencode($data['nama']); ?>" 
+                                           class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-all" title="Edit">
+                                            <i data-feather="edit-2" class="w-4 h-4"></i>
+                                        </a>
+                                        <a href="../aksi/aksi_hapus_anggota.php?nama=<?php echo urlencode($data['nama']); ?>" 
+                                           onclick="return confirm('Yakin ingin menghapus anggota ini?')"
+                                           class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-all" title="Hapus">
+                                            <i data-feather="trash-2" class="w-4 h-4"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
 
-                    $no = 1;
-
-                    while ($data = mysqli_fetch_assoc($result)) {
-                        echo "<tr class='hover:bg-gray-50 transition'>";
-                        echo "<td class='p-2 text-center border'>" . $no++ . "</td>";
-                        echo "<td class='p-2 font-medium border'>" . $data['nama'] . "</td>";
-                        echo "<td class='p-2 font-medium border'>" . $data['kelas'] . "</td>";
-                        echo "<td class='p-2 border'>" . $data['status'] . "</td>";
-                        echo "<td class='p-2 text-center'>
-                                <a href='edit_anggota.php?nama=" . $data['nama'] . "' class='text-blue-600 hover:underline BORDER'>edit</a> |
-                                <a href='../aksi/aksi_hapus_anggota.php?nama=" . $data['nama'] . "' class='text-red-600 hover:underline' border onclick=\"return confirm('yakin ingin menghapus data ini?')\">hapus</a>
-                              </td>";
-                        echo "</tr>";
-                    }
-                    ?>
-                </tbody>
-            </table>
-
-
+    <script>
+        feather.replace();
+    </script>
 </body>
+
 </html>

@@ -4,12 +4,14 @@ include '../config/koneksi.php';
 
 if (isset($_POST['edit'])) {
 
-    $nama = mysqli_real_escape_string($koneksi, $_POST['nama']);
-    $judul_buku = mysqli_real_escape_string($koneksi, $_POST['judul_buku']);
+    $id_transaksi = mysqli_real_escape_string($koneksi, $_POST['id_transaksi']);
+    $id_anggota = mysqli_real_escape_string($koneksi, $_POST['id_anggota']);
+    $id_buku = mysqli_real_escape_string($koneksi, $_POST['id_buku']);
     $tanggal_pinjam = mysqli_real_escape_string($koneksi, $_POST['tanggal_pinjam']);
     $tanggal_kembali = mysqli_real_escape_string($koneksi, $_POST['tanggal_kembali']);
+    $status = mysqli_real_escape_string($koneksi, $_POST['status']);
 
-    $query = "UPDATE transaksi SET nama='$nama', judul_buku='$judul_buku', tanggal_pinjam='$tanggal_pinjam', tanggal_kembali='$tanggal_kembali' WHERE judul_buku='$judul_buku'";
+    $query = "UPDATE transaksi SET id_anggota='$id_anggota', id_buku='$id_buku', tanggal_pinjam='$tanggal_pinjam', tanggal_kembali='$tanggal_kembali', status='$status' WHERE id_transaksi='$id_transaksi'";
 
     $update = mysqli_query($koneksi, $query);
 

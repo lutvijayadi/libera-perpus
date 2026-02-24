@@ -16,7 +16,7 @@ $data = mysqli_fetch_assoc($query);
     <title>libera edit anggota</title>
 </head>
 
-<body>
+<body class="bg-[#B0FFFA]">
     <h1>edit anggota</h1>
     <form action="../aksi/aksi_edit_anggota.php" method="post">
         <input type="hidden" name="nama_lama" value="<?php echo $data['nama']; ?>">

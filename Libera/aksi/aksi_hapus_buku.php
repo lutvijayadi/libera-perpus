@@ -2,9 +2,9 @@
 
 include '../config/koneksi.php';
 
-$judul_buku = $_GET['judul_buku']; 
+$id = $_GET['id']; 
 
-$query = "DELETE FROM buku WHERE judul_buku='$judul_buku'";
+$query = "DELETE FROM buku WHERE id_buku='$id'";
 
 if (mysqli_query($koneksi, $query)) {
     header("Location: ../admin/kelola_data_buku.php");

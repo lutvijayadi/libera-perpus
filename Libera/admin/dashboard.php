@@ -1,18 +1,44 @@
 <?php
+session_start();
 include '../config/koneksi.php';
 
 // Query untuk menghitung total semua buku
 $query_total = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM buku");
 $data_total = mysqli_fetch_assoc($query_total);
 
+
+$username = $_SESSION['username'];
+$query = mysqli_query(
+    $koneksi,
+    "SELECT * FROM users WHERE username='$username'"
+);
+$user = mysqli_fetch_assoc($query);
+
+if (!isset($_SESSION['username'])) {
+    header("Location: ../login.php");
+    exit;
+}
+
+
+$query_aktivitas = mysqli_query($koneksi, "
+    SELECT p.*, u.nama, p.judul_buku
+    FROM transaksi p
+    JOIN users u ON p.nama = u.username
+    JOIN buku b ON p.judul_buku = b.judul_buku
+    ORDER BY p.tanggal_pinjam DESC
+    LIMIT 5
+");
+
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
 
     <script src="https://unpkg.com/feather-icons"></script>
@@ -23,78 +49,118 @@ $data_total = mysqli_fetch_assoc($query_total);
     <title>libera admin</title>
 </head>
 
-<body class="bg-gray-50">
 
-    <div class="container">
-        <div class="fixed left-0 top-0 h-screen w-60 p-6 flex flex-col gap-8 bg-[#fff] shadow-lg z-10">
-            <nav>
-                <img src="../resources/img/logo.png" alt="Logo">
-            </nav>
-            <nav class="mt-10 bg-white gap-3 p-2 rounded-lg flex items-center hover:bg-gray-100">
-                <i data-feather="home" class="w-5 h-5"></i>
-                <a class="text-black" href="../admin/dashboard.php">Dashboard</a>
-            </nav>
-            <nav class="bg-white gap-3 p-2 rounded-lg flex items-center hover:bg-gray-100">
-                <i data-feather="users" class="w-5 h-5"></i>
-                <a class="text-black" href="../admin/kelola_anggota.php">kelola anggota</a>
-            </nav>
-            <nav class="bg-white gap-3 p-2 rounded-lg flex items-center hover:bg-gray-100">
-                <i data-feather="book" class="w-5 h-5"></i>
-                <a class="text-black" href="../admin/kelola_data_buku.php">kelola data buku</a>
-            </nav>
-            <nav class="bg-white gap-3 p-2 rounded-lg flex items-center hover:bg-gray-100">
-                <i data-feather="file-text" class="w-5 h-5"></i>
-                <a class="text-black" href="../admin/transaksi.php">transaksi</a>
-            </nav>
-            <nav class="mt-auto bg-white gap-3 p-2 rounded-lg flex items-center">
-                <i data-feather="settings" class="w-5 h-5"></i>
-            </nav>
-        </div>
-    </div>
+<body class="bg-[#B0FFFA] font-poppins">
 
-    <section>
-        <div class="ml-60 p-4 justify-between flex items-center bg-[#fFF] shadow-lg">
-            <h1 class="font-bold uppercase tracking-wide">
-            </h1>
-            <div class="flex items-center gap-4">
-                <span class="text-sm font-medium">Admin Libera</span>
-                <img src="../resources/img/hapidd.png" alt="Admin" class="w-8 h-8 rounded-full border">
+    <?php include 'partials/sidebar.php'; ?>
+
+    <!-- KONTEN UTAMA -->
+    <main class="ml-60 p-4 min-h-screen">
+        <section>
+            <div class="mt-6 bg-gradient-to-r from-blue-600 to-blue-500 p-6 rounded-xl shadow text-white">
+                <h2 class="text-2xl font-semibold mb-1">
+                    Halo, <?php echo $user['nama']; ?>
+                </h2>
+                <p class="text-sm opacity-90">
+                    Selamat datang di dashboard admin Libera. Kelola data perpustakaan dengan mudah.
+                </p>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section class="gap-6 ml-60 p-4 flex">
-
-        <div>
-            <div class="bg-white px-9 py-4 rounded-lg shadow-md">
-                <h2 class="text-gray-600 text-sm">Total Anggota</h2>
-                <p class="my-2 text-2xl font-bold text-gray-800">350</p>
-                <p class="md-4 text-xs font-reguler text-gray-600">total anggota terdaftar</p>
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
+            <!-- Anggota -->
+            <div class="bg-white p-5 rounded-xl shadow hover:shadow-lg transition">
+                <p class="text-sm text-gray-500">Total Anggota</p>
+                <h3 class="text-3xl font-bold text-blue-600 mt-2">350</h3>
+                <p class="text-xs text-gray-400 mt-1">anggota terdaftar</p>
             </div>
-        </div>
-        <div class="mb-auto bg-white px-9 py-4  rounded-lg shadow-md">
-            <h2 class="text-gray-600 text-sm">Total Buku</h2>
-            <p class="my-2 text-2xl font-bold text-gray-800"><?php echo $data_total['total']; ?></p>
-            <p class="md-4 text-xs font-reguler text-gray-600">total buku saat ini</p>
-        </div>
-        <div class="mb-auto bg-white px-6  py-4  rounded-lg shadow-md">
-            <h2 class="text-gray-600 text-sm">Sedang Dipinjam</h2>
-            <p class="my-2 text-2xl font-bold text-gray-800">120</p>
-            <p class="md-4 text-xs font-reguler text-gray-600">total buku sedang dipinjam</p>
-        </div>
 
-    </section>
-    <section class="ml-60 p-4 flex mb-auto">
-        <div class=" mt-auto bg-white px-9 py-4 rounded-lg shadow-md">
-            <h2 class="text-gray-600 text-sm">Total Pengunjung</h2>
-            <p class="my-2 text-2xl font-bold text-gray-800">1.250</p>
-            <p class="md-4 text-xs font-reguler text-gray-600">total pengunjung bulan ini</p>
-        </div>
-    </section>
+            <!-- Buku -->
+            <div class="bg-white p-5 rounded-xl shadow hover:shadow-lg transition">
+                <p class="text-sm text-gray-500">Total Buku</p>
+                <h3 class="text-3xl font-bold text-blue-600 mt-2">
+                    <?php echo $data_total['total']; ?>
+                </h3>
+                <p class="text-xs text-gray-400 mt-1">buku tersedia</p>
+            </div>
+
+            <!-- Dipinjam -->
+            <div class="bg-white p-5 rounded-xl shadow hover:shadow-lg transition">
+                <p class="text-sm text-gray-500">Sedang Dipinjam</p>
+                <h3 class="text-3xl font-bold text-blue-600 mt-2">120</h3>
+                <p class="text-xs text-gray-400 mt-1">buku dipinjam</p>
+            </div>
+
+            <!-- Pengunjung -->
+            <div class="bg-white p-5 rounded-xl shadow hover:shadow-lg transition">
+                <p class="text-sm text-gray-500">Total Pengunjung</p>
+                <h3 class="text-3xl font-bold text-blue-600 mt-2">1.250</h3>
+                <p class="text-xs text-gray-400 mt-1">bulan ini</p>
+            </div>
+        </section>
+        <section>
+            <div>
+                <h2 class="text-lg font-semibold text-gray-700 mb-4 mt-6">
+                    Aktivitas Terbaru
+                </h2>
+
+                <?php if (mysqli_num_rows($query_aktivitas) > 0): ?>
+                        <?php while ($row = mysqli_fetch_assoc($query_aktivitas)): ?>
+                            <a href="edit_transaksi.php?id_=<?php echo $row['id_transaksi']; ?>" class="block">
+                                    <div class="bg-white rounded-xl shadow p-4 hover:shadow-lg transition mb-3">
+                                        <p class="text-sm text-gray-500">
+                                            <?php echo date('d F Y, H:i', strtotime($row['tanggal_pinjam'])); ?>
+                                        </p>
+
+                                        <p class="mt-1 text-gray-700">
+                                            <?php echo $row['nama']; ?> meminjam
+                                            "<strong><?php echo $row['judul_buku']; ?></strong>"
+
+                                            <?php if ($row['status'] == 0): ?>
+                                                    <span class="text-yellow-500 text-sm">(Menunggu Konfirmasi)</span>
+                                            <?php elseif ($row['status'] == 1): ?>
+                                                    <span class="text-green-600 text-sm">(Disetujui)</span>
+                                            <?php else: ?>
+                                                    <span class="text-red-500 text-sm">(Ditolak)</span>
+                                            <?php endif; ?>
+                                        </p>
+                                    </div>
+                                </a>
+                        <?php endwhile; ?>
+                <?php else: ?>
+                        <p class="text-gray-500">Belum ada aktivitas peminjaman.</p>
+                <?php endif; ?>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+            <div class="bg-white rounded-xl shadow p-6 hover:shadow-lg transition">
+                <h2 class="text-lg font-semibold text-gray-700 mb-4">
+                    Grafik Pengunjung Bulanan
+                </h2>
+                <div class="h-64 flex items-center justify-center text-gray-400 hover:shadow-lg transition">
+
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow p-6">
+                <h2 class="text-lg font-semibold text-gray-700 mb-4">
+                    Grafik Peminjaman Bulanan
+                </h2>
+                <div class="h-64 flex items-center justify-center text-gray-400">
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- akhir conten -->
 
     <script>
         feather.replace();
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
 </body>
 
 </html>

@@ -13,12 +13,12 @@ if (isset($_POST['daftar'])) {
     $insert = mysqli_query($koneksi, $query);
 
     if ($insert) {
-        header("location:../resources/view/login.php?pesan=berhasil_registrasi");
+        header("location:../auth/login.php?pesan=berhasil_registrasi");
     } else {
-        header("location:../resources/view/registrasiuser.php?pesan=gagal_registrasi");
+        header("location:../auth/registrasiuser.php?pesan=gagal_registrasi");
     }
 } else {
 
-    header("location:../resources/view/registrasiuser.php");
+    header("location:../auth/registrasiuser.php");
 }
 ?>

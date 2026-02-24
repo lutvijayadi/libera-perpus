@@ -24,30 +24,8 @@ $data_total = mysqli_fetch_assoc($query_total);
 </head>
 
 <body class="bg-gray-50">
-
-    <div class="container">
-        <div class="fixed left-0 top-0 h-screen w-60 p-6 flex flex-col gap-8 bg-[#fff] shadow-lg z-10">
-            <nav>
-                <img src="../resources/img/logo.png" alt="Logo">
-            </nav>
-            <nav class="mt-10 bg-white gap-3 p-2 rounded-lg flex items-center hover:bg-gray-100">
-                <i data-feather="home" class="w-5 h-5"></i>
-                <a class="text-black" href="../user/dashboard_user.php">Dashboard</a>
-            </nav>
-            <nav class="bg-white gap-3 p-2 rounded-lg flex items-center hover:bg-gray-100">
-                <i data-feather="book" class="w-5 h-5"></i>
-                <a class="text-black" href="../user/peminjaman_buku.php">kelola data buku</a>
-            </nav>
-            <nav class="bg-white gap-3 p-2 rounded-lg flex items-center hover:bg-gray-100">
-                <i data-feather="book-open" class="w-5 h-5"></i>
-                <a class="text-black" href="../user/pengembalian_buku.php">pengembalian buku</a>
-            </nav>
-            <nav class="mt-auto bg-white gap-3 p-2 rounded-lg flex items-center">
-                <i data-feather="settings" class="w-5 h-5"></i>
-            </nav>
-        </div>
-    </div>
-
+    <!-- sidebar -->
+    <?php include 'partials/sidebar_user.php'; ?>
     <section>
         <div class="ml-60 p-4 justify-between flex items-center bg-[#fFF] shadow-lg">
             <h1 class="font-bold uppercase tracking-wide">

@@ -33,7 +33,7 @@ if ($cek) {
     } else {
 
         // alihkan ke halaman login kembali
-        header("location:../assets/view/login.php?pesan=gagal");
+        header("location:../resources/view/login.php?pesan=gagal");
     }
 } else {
     header("location:../index/index.php?pesan=gagal");
