@@ -1,8 +1,8 @@
 <?php
 include '../config/koneksi.php';
 
-// Ambil data anggota
-$query = "SELECT * FROM anggota ORDER BY nama ASC";
+// ambil data dari users (hanya siswa)
+$query = "SELECT * FROM users WHERE level='siswa' ORDER BY nama ASC";
 $result = mysqli_query($koneksi, $query);
 
 if (!$result) {
@@ -21,7 +21,9 @@ if (!$result) {
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100..900&display=swap" rel="stylesheet">
     <title>Libera Kelola Anggota</title>
     <style>
-        body { font-family: 'Poppins', sans-serif; }
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
     </style>
 </head>
 
@@ -61,33 +63,41 @@ if (!$result) {
                         <?php
                         $no = 1;
                         while ($data = mysqli_fetch_assoc($result)) {
-                            // Logika warna badge status (Sama dengan gaya Transaksi)
+                            // Logika warna badge status agar konsisten
                             $status_class = ($data['status'] == 'aktif') ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600';
-                        ?>
-                            <tr class="hover:bg-blue-50/50 transition-colors">
+                            ?>
+                            <tr class="hover:bg-blue-50/50 transition-colors border-b border-gray-100">
                                 <td class="px-6 py-4 text-center font-medium text-gray-400">
                                     <?php echo $no++; ?>
                                 </td>
+
                                 <td class="px-6 py-4">
                                     <div class="font-semibold text-gray-700"><?php echo $data['nama']; ?></div>
                                 </td>
+
                                 <td class="px-6 py-4 font-medium text-gray-600">
-                                    <?php echo $data['kelas']; ?>
+                                    @<?php echo $data['username']; ?>
                                 </td>
+
                                 <td class="px-6 py-4 text-center">
-                                    <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase <?php echo $status_class; ?>">
+                                    <span
+                                        class="px-3 py-1 rounded-full text-[10px] font-bold uppercase <?php echo $status_class; ?>">
                                         <?php echo $data['status']; ?>
                                     </span>
                                 </td>
+
                                 <td class="px-6 py-4">
                                     <div class="flex items-center justify-center gap-2">
-                                        <a href="edit_anggota.php?nama=<?php echo urlencode($data['nama']); ?>" 
-                                           class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-all" title="Edit">
+                                        <a href="edit_user.php?id=<?php echo $data['id_users']; ?>"
+                                            class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-all"
+                                            title="Edit">
                                             <i data-feather="edit-2" class="w-4 h-4"></i>
                                         </a>
-                                        <a href="../aksi/aksi_hapus_anggota.php?nama=<?php echo urlencode($data['nama']); ?>" 
-                                           onclick="return confirm('Yakin ingin menghapus anggota ini?')"
-                                           class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-all" title="Hapus">
+
+                                        <a href="../aksi/aksi_hapus_user.php?id=<?php echo $data['id_users']; ?>"
+                                            onclick="return confirm('Yakin ingin menghapus user ini?')"
+                                            class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                                            title="Hapus">
                                             <i data-feather="trash-2" class="w-4 h-4"></i>
                                         </a>
                                     </div>

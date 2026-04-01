@@ -4,7 +4,7 @@ include '../config/koneksi.php';
 
 $nama = $_GET['nama']; 
 
-$query = "DELETE FROM anggota WHERE nama='$nama'";
+$query = "DELETE FROM users WHERE nama='$nama'";
 
 if (mysqli_query($koneksi, $query)) {
     header("Location: ../admin/kelola_anggota.php");

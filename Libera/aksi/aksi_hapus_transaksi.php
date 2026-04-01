@@ -2,9 +2,9 @@
 
 include '../config/koneksi.php';
 
-$id = $_GET['id']; 
+$id = $_GET['id_transaksi']; 
 
-$query = "DELETE FROM transaksi WHERE id='$id'";
+$query = "DELETE FROM transaksi WHERE id_transaksi='$id'";
 
 if (mysqli_query($koneksi, $query)) {
     header("Location: ../admin/transaksi.php");

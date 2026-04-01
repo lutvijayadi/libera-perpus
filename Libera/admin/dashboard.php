@@ -103,33 +103,11 @@ $query_aktivitas = mysqli_query($koneksi, "
                 <h2 class="text-lg font-semibold text-gray-700 mb-4 mt-6">
                     Aktivitas Terbaru
                 </h2>
-
-                <?php if (mysqli_num_rows($query_aktivitas) > 0): ?>
-                        <?php while ($row = mysqli_fetch_assoc($query_aktivitas)): ?>
-                            <a href="edit_transaksi.php?id_=<?php echo $row['id_transaksi']; ?>" class="block">
-                                    <div class="bg-white rounded-xl shadow p-4 hover:shadow-lg transition mb-3">
-                                        <p class="text-sm text-gray-500">
-                                            <?php echo date('d F Y, H:i', strtotime($row['tanggal_pinjam'])); ?>
-                                        </p>
-
-                                        <p class="mt-1 text-gray-700">
-                                            <?php echo $row['nama']; ?> meminjam
-                                            "<strong><?php echo $row['judul_buku']; ?></strong>"
-
-                                            <?php if ($row['status'] == 0): ?>
-                                                    <span class="text-yellow-500 text-sm">(Menunggu Konfirmasi)</span>
-                                            <?php elseif ($row['status'] == 1): ?>
-                                                    <span class="text-green-600 text-sm">(Disetujui)</span>
-                                            <?php else: ?>
-                                                    <span class="text-red-500 text-sm">(Ditolak)</span>
-                                            <?php endif; ?>
-                                        </p>
-                                    </div>
-                                </a>
-                        <?php endwhile; ?>
-                <?php else: ?>
-                        <p class="text-gray-500">Belum ada aktivitas peminjaman.</p>
-                <?php endif; ?>
+                <a href="../admin/notifications.php"
+                    class="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-all shadow-md hover:shadow-lg text-sm">
+                    <i data-feather="message-square" class="w-4 h-4"></i>
+                    lihat notif
+                </a>
             </div>
         </section>
 

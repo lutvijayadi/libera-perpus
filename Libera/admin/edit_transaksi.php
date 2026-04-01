@@ -2,14 +2,14 @@
 
 include '../config/koneksi.php';
 
-if (!isset($_GET['id_transaksi'])) {
-    echo "ID Transaksi tidak ditemukan!";
+if (!isset($_GET['id_buku'])) {
+    echo "ID Buku tidak ditemukan!";
     exit;
 }
 
-$id = $_GET['id_transaksi'];
+$id = $_GET['id_buku'];
 
-$query = mysqli_query($koneksi, "SELECT * FROM transaksi WHERE id_transaksi = '$id'");
+$query = mysqli_query($koneksi, "SELECT * FROM transaksi WHERE id_buku = '$id'");
 $data = mysqli_fetch_assoc($query);
 
 if (!$data) {

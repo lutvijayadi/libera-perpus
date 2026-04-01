@@ -1,74 +1,80 @@
 <?php
 include '../config/koneksi.php';
 
-// Query untuk menghitung total semua buku
-$query_total = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM buku");
-$data_total = mysqli_fetch_assoc($query_total);
+// total buku
+$total_buku = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as total FROM buku"))['total'];
 
+// total user
+$total_user = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as total FROM users"))['total'];
+
+// total transaksi
+$total_pinjam = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as total FROM transaksi"))['total'];
 ?>
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <title>Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-
     <script src="https://unpkg.com/feather-icons"></script>
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&family=Poppins:wght@100..900&display=swap"
-        rel="stylesheet">
-    <title>libera admin</title>
 </head>
 
-<body class="bg-gray-50">
-    <!-- sidebar -->
+<body class="bg-gray-100">
+
     <?php include 'partials/sidebar_user.php'; ?>
-    <section>
-        <div class="ml-60 p-4 justify-between flex items-center bg-[#fFF] shadow-lg">
-            <h1 class="font-bold uppercase tracking-wide">
-            </h1>
-            <div class="flex items-center gap-4">
-                <span class="text-sm font-medium">Admin Libera</span>
-                <img src="../resources/img/hapidd.png" alt="Admin" class="w-8 h-8 rounded-full border">
+
+    <!-- HEADER -->
+    <div class="ml-60 p-4 flex justify-between items-center bg-white shadow">
+        <h1 class="font-bold text-lg">Dashboard</h1>
+        <div class="flex items-center gap-3">
+            <span>Admin</span>
+            <img src="../resources/img/hapidd.png" class="w-8 h-8 rounded-full">
+        </div>
+    </div>
+
+    <!-- CARDS -->
+    <div class="ml-60 p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <!-- USER -->
+        <div class="bg-blue-500 text-white p-5 rounded-xl shadow hover:scale-105 transition">
+            <div class="flex justify-between items-center">
+                <div>
+                    <p class="text-sm">Total User</p>
+                    <h2 class="text-2xl font-bold"><?= $total_user ?></h2>
+                </div>
+                <i data-feather="users"></i>
             </div>
         </div>
-    </section>
 
-    <section class="gap-6 ml-60 p-4 flex">
-
-        <div>
-            <div class="bg-white px-9 py-4 rounded-lg shadow-md">
-                <h2 class="text-gray-600 text-sm">Total Anggota</h2>
-                <p class="my-2 text-2xl font-bold text-gray-800">350</p>
-                <p class="md-4 text-xs font-reguler text-gray-600">total anggota terdaftar</p>
+        <!-- BUKU -->
+        <div class="bg-green-500 text-white p-5 rounded-xl shadow hover:scale-105 transition">
+            <div class="flex justify-between items-center">
+                <div>
+                    <p class="text-sm">Total Buku</p>
+                    <h2 class="text-2xl font-bold"><?= $total_buku ?></h2>
+                </div>
+                <i data-feather="book"></i>
             </div>
         </div>
-        <div class="mb-auto bg-white px-9 py-4  rounded-lg shadow-md">
-            <h2 class="text-gray-600 text-sm">Total Buku</h2>
-            <p class="my-2 text-2xl font-bold text-gray-800"><?php echo $data_total['total']; ?></p>
-            <p class="md-4 text-xs font-reguler text-gray-600">total buku saat ini</p>
-        </div>
-        <div class="mb-auto bg-white px-6  py-4  rounded-lg shadow-md">
-            <h2 class="text-gray-600 text-sm">Sedang Dipinjam</h2>
-            <p class="my-2 text-2xl font-bold text-gray-800">120</p>
-            <p class="md-4 text-xs font-reguler text-gray-600">total buku sedang dipinjam</p>
+
+        <!-- TRANSAKSI -->
+        <div class="bg-yellow-500 text-white p-5 rounded-xl shadow hover:scale-105 transition">
+            <div class="flex justify-between items-center">
+                <div>
+                    <p class="text-sm">Total Peminjaman</p>
+                    <h2 class="text-2xl font-bold"><?= $total_pinjam ?></h2>
+                </div>
+                <i data-feather="repeat"></i>
+            </div>
         </div>
 
-    </section>
-    <section class="ml-60 p-4 flex mb-auto">
-        <div class=" mt-auto bg-white px-9 py-4 rounded-lg shadow-md">
-            <h2 class="text-gray-600 text-sm">Total Pengunjung</h2>
-            <p class="my-2 text-2xl font-bold text-gray-800">1.250</p>
-            <p class="md-4 text-xs font-reguler text-gray-600">total pengunjung bulan ini</p>
-        </div>
-    </section>
+    </div>
 
     <script>
         feather.replace();
     </script>
+
 </body>
 
 </html>

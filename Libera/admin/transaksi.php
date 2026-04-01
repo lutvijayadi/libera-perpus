@@ -1,11 +1,9 @@
 <?php
 include '../config/koneksi.php';
 
-// Query dengan Join untuk mengambil nama anggota
-$query = "SELECT transaksi.*, anggota.nama AS nama_anggota 
-          FROM transaksi 
-          LEFT JOIN anggota ON transaksi.id_anggota = anggota.id_anggota 
-          ORDER BY transaksi.id_transaksi DESC";
+// Query untuk mengambil data transaksi
+// Jika tabel transaksi belum memiliki id_anggota, kita tetap bisa menampilkan data
+$query = "SELECT * FROM transaksi ORDER BY id_transaksi DESC";
 $result = mysqli_query($koneksi, $query);
 
 if (!$result) {
@@ -24,7 +22,9 @@ if (!$result) {
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100..900&display=swap" rel="stylesheet">
     <title>Libera Transaksi</title>
     <style>
-        body { font-family: 'Poppins', sans-serif; }
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
     </style>
 </head>
 
@@ -75,13 +75,14 @@ if (!$result) {
                             } else {
                                 $status_class = "bg-gray-100 text-gray-600";
                             }
-                        ?>
+                            ?>
                             <tr class="hover:bg-blue-50/50 transition-colors">
                                 <td class="px-6 py-4 text-center font-medium text-gray-400">
                                     <?php echo $row['id_transaksi']; ?>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <div class="font-semibold text-gray-900"><?php echo $row['nama_anggota']; ?></div>
+                                    <div class="font-semibold text-gray-900">
+                                        <?php echo isset($row['nama']) ? $row['nama'] : '-'; ?></div>
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="text-gray-700 italic">"<?php echo $row['judul_buku']; ?>"</div>
@@ -99,25 +100,28 @@ if (!$result) {
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 text-center">
-                                    <span class="px-3 py-1 rounded-full text-xs font-bold uppercase <?php echo $status_class; ?>">
+                                    <span
+                                        class="px-3 py-1 rounded-full text-xs font-bold uppercase <?php echo $status_class; ?>">
                                         <?php echo $row['status']; ?>
                                     </span>
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center justify-center gap-2">
-                                        <a href="edit_transaksi.php?id_transaksi=<?php echo $row['id_transaksi']; ?>" 
-                                           class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-all" title="Edit Transaksi">
+                                        <a href="edit_transaksi.php?id=<?php echo $row['id_buku']; ?>"
+                                            class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-all"
+                                            title="Edit Transaksi">
                                             <i data-feather="edit-2" class="w-4 h-4"></i>
                                         </a>
-                                        <a href="../aksi/aksi_hapus_transaksi.php?id=<?php echo $row['id_transaksi']; ?>" 
-                                           onclick="return confirm('Yakin ingin menghapus data transaksi ini?')"
-                                           class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-all" title="Hapus">
+                                        <a href="../aksi/aksi_hapus_transaksi.php?id=<?php echo $row['id_buku']; ?>"
+                                            onclick="return confirm('Yakin ingin menghapus data transaksi ini?')"
+                                            class="p-2 text-red-500 hover        :bg-red-50 rounded-lg transition-all"
+                                            title="Hapus">
                                             <i data-feather="trash-2" class="w-4 h-4"></i>
                                         </a>
                                     </div>
                                 </td>
                             </tr>
-                        <?php
+                            <?php
                         }
                         mysqli_close($koneksi);
                         ?>
@@ -131,4 +135,5 @@ if (!$result) {
         feather.replace();
     </script>
 </body>
+
 </html>

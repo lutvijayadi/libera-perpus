@@ -4,8 +4,10 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 ?>
 
-<aside id="default-sidebar" class="fixed top-0 left-0 z-40 w-64 h-full transition-transform -translate-x-full sm:translate-x-0 " aria-label="Sidebar">
-  <div class="container">
+<aside id="default-sidebar"
+    class="fixed top-0 left-0 z-40 w-64 h-full transition-transform -translate-x-full sm:translate-x-0 "
+    aria-label="Sidebar">
+    <div class="container">
         <div class="fixed left-0 top-0 h-screen w-60 p-6 flex flex-col gap-8 bg-[#fff] shadow-lg z-10">
             <nav>
                 <img src="../resources/img/logo.png" alt="Logo">
@@ -16,7 +18,7 @@ if (session_status() === PHP_SESSION_NONE) {
             </nav>
             <nav class="bg-white gap-3 p-2 rounded-lg flex items-center hover:bg-gray-100">
                 <i data-feather="book" class="w-5 h-5"></i>
-                <a class="text-black" href="../user/peminjaman_buku.php">kelola data buku</a>
+                <a class="text-black" href="../user/daftar_buku.php">kelola data buku</a>
             </nav>
             <nav class="bg-white gap-3 p-2 rounded-lg flex items-center hover:bg-gray-100">
                 <i data-feather="book-open" class="w-5 h-5"></i>

@@ -10,7 +10,7 @@ $query = mysqli_query(
 $user = mysqli_fetch_assoc($query);
 
 if (!isset($_SESSION['username'])) {
-    header("Location: ../login.php");
+    header("Location: ../auth/login.php");
     exit;
 }
 
@@ -58,15 +58,35 @@ $query_notif = mysqli_query($koneksi, "SELECT * FROM notif ORDER BY created_at D
                 <?php if (mysqli_num_rows($query_notif) > 0): ?>
                     <div class="space-y-4">
                         <?php while ($notif = mysqli_fetch_assoc($query_notif)): ?>
-                            <div class="bg-gray-50 rounded-lg p-4 border-l-4 border-blue-500">
-                                <p class="text-sm text-gray-500">
-                                    <?php echo date('d M Y, H:i', strtotime($notif['created_at'])); ?></p>
-                                <p class="mt-1 text-gray-700"><?php echo htmlspecialchars($notif['message']); ?></p>
-                            </div>
+                            <?php
+                            // Jika id_transaksi tidak ada atau 0, gunakan link alternatif atau sembunyikan
+                            $link_target = isset($notif['id_transaksi']) && !empty($notif['id_transaksi'])
+                                ? "konfirmasi_pinjam.php?id=" . $notif['id_transaksi']
+                                : "transaksi.php";
+                            ?>
+                            <a href="<?php echo $link_target; ?>"
+                                class="block bg-gray-50 rounded-lg p-4 border-l-4 border-blue-500 hover:bg-blue-50 transition duration-200 shadow-sm">
+
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <p class="text-xs text-gray-400">
+                                            <?php echo date('d M Y, H:i', strtotime($notif['created_at'])); ?>
+                                        </p>
+                                        <p class="mt-1 text-gray-700 font-medium">
+                                            <?php echo htmlspecialchars($notif['message']); ?>
+                                        </p>
+                                    </div>
+                                    <span class="text-blue-500 text-sm font-semibold flex items-center gap-1">
+                                        Proses <i data-feather="arrow-right" class="w-4 h-4"></i>
+                                    </span>
+                                </div>
+                            </a>
                         <?php endwhile; ?>
                     </div>
                 <?php else: ?>
-                    <p class="text-gray-500">Belum ada notifikasi.</p>
+                    <div class="text-center py-10">
+                        <p class="text-gray-500 italic">Belum ada notifikasi.</p>
+                    </div>
                 <?php endif; ?>
             </div>
         </section>
