@@ -107,12 +107,12 @@ if (!$result) {
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center justify-center gap-2">
-                                        <a href="edit_transaksi.php?id=<?php echo $row['id_buku']; ?>"
+                                       <a href="edit_transaksi.php?id_transaksi=<?php echo $row['id_transaksi']; ?>
                                             class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-all"
                                             title="Edit Transaksi">
                                             <i data-feather="edit-2" class="w-4 h-4"></i>
                                         </a>
-                                        <a href="../aksi/aksi_hapus_transaksi.php?id=<?php echo $row['id_buku']; ?>"
+                                        <a href="../aksi/aksi_hapus_transaksi.php?id_transaksi=<?php echo $row['id_transaksi']; ?>
                                             onclick="return confirm('Yakin ingin menghapus data transaksi ini?')"
                                             class="p-2 text-red-500 hover        :bg-red-50 rounded-lg transition-all"
                                             title="Hapus">

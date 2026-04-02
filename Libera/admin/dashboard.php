@@ -2,6 +2,10 @@
 session_start();
 include '../config/koneksi.php';
 
+if (!isset($_SESSION['username'])) {
+    header("Location: ../login.php");
+    exit;
+}
 // Query untuk menghitung total semua buku
 $query_total = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM buku");
 $data_total = mysqli_fetch_assoc($query_total);
@@ -14,11 +18,6 @@ $query = mysqli_query(
 );
 $user = mysqli_fetch_assoc($query);
 
-if (!isset($_SESSION['username'])) {
-    header("Location: ../login.php");
-    exit;
-}
-
 
 $query_aktivitas = mysqli_query($koneksi, "
     SELECT p.*, u.nama, p.judul_buku
@@ -29,6 +28,52 @@ $query_aktivitas = mysqli_query($koneksi, "
     LIMIT 5
 ");
 
+$query_pengunjung = mysqli_query($koneksi, "
+    SELECT 
+        MONTH(IFNULL(created_at, NOW())) as bulan, 
+        COUNT(*) as total
+    FROM users
+    GROUP BY MONTH(IFNULL(created_at, NOW()))
+    ORDER BY bulan
+");
+
+$query_peminjaman = mysqli_query($koneksi, "
+    SELECT 
+        MONTH(tanggal_pinjam) as bulan, 
+        COUNT(*) as total
+    FROM transaksi
+    GROUP BY MONTH(tanggal_pinjam)
+    ORDER BY bulan
+");
+
+if (!$query_peminjaman) {
+    die("Query error: " . mysqli_error($koneksi));
+}
+
+$query_anggota = mysqli_query($koneksi, "
+    SELECT COUNT(*) as total
+    FROM users
+    WHERE level = 'user'
+");
+
+$data_anggota = mysqli_fetch_assoc($query_anggota);
+
+$query_pinjam = mysqli_query($koneksi, "
+    SELECT COUNT(*) as total 
+    FROM transaksi 
+    WHERE status = 'dipinjam'
+");
+
+$data_pinjam = mysqli_fetch_assoc($query_pinjam);
+
+$query_pengunjung_bulan = mysqli_query($koneksi, "
+    SELECT COUNT(*) as total 
+    FROM users 
+    WHERE MONTH(created_at) = MONTH(CURRENT_DATE())
+    AND YEAR(created_at) = YEAR(CURRENT_DATE())
+");
+
+$data_pengunjung = mysqli_fetch_assoc($query_pengunjung_bulan);
 ?>
 
 
@@ -42,6 +87,7 @@ $query_aktivitas = mysqli_query($koneksi, "
     <script src="https://cdn.tailwindcss.com"></script>
 
     <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
     <link
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&family=Poppins:wght@100..900&display=swap"
@@ -71,7 +117,10 @@ $query_aktivitas = mysqli_query($koneksi, "
             <!-- Anggota -->
             <div class="bg-white p-5 rounded-xl shadow hover:shadow-lg transition">
                 <p class="text-sm text-gray-500">Total Anggota</p>
-                <h3 class="text-3xl font-bold text-blue-600 mt-2">350</h3>
+
+                <h3 class="text-3xl font-bold text-blue-600 mt-2">
+                    <?php echo $data_anggota['total']; ?>
+                </h3>
                 <p class="text-xs text-gray-400 mt-1">anggota terdaftar</p>
             </div>
 
@@ -87,14 +136,18 @@ $query_aktivitas = mysqli_query($koneksi, "
             <!-- Dipinjam -->
             <div class="bg-white p-5 rounded-xl shadow hover:shadow-lg transition">
                 <p class="text-sm text-gray-500">Sedang Dipinjam</p>
-                <h3 class="text-3xl font-bold text-blue-600 mt-2">120</h3>
+                <h3 class="text-3xl font-bold text-blue-600 mt-2">
+                    <?php echo number_format($data_pinjam['total']); ?>
+                </h3>
                 <p class="text-xs text-gray-400 mt-1">buku dipinjam</p>
             </div>
-
             <!-- Pengunjung -->
             <div class="bg-white p-5 rounded-xl shadow hover:shadow-lg transition">
                 <p class="text-sm text-gray-500">Total Pengunjung</p>
-                <h3 class="text-3xl font-bold text-blue-600 mt-2">1.250</h3>
+
+                <h3 class="text-3xl font-bold text-blue-600 mt-2">
+                    <?php echo number_format($data_pengunjung['total']); ?>
+                </h3>
                 <p class="text-xs text-gray-400 mt-1">bulan ini</p>
             </div>
         </section>
@@ -112,27 +165,69 @@ $query_aktivitas = mysqli_query($koneksi, "
         </section>
 
         <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+
+            <!-- Grafik Pengunjung -->
             <div class="bg-white rounded-xl shadow p-6 hover:shadow-lg transition">
                 <h2 class="text-lg font-semibold text-gray-700 mb-4">
                     Grafik Pengunjung Bulanan
                 </h2>
-                <div class="h-64 flex items-center justify-center text-gray-400 hover:shadow-lg transition">
-
-                </div>
+                <div id="chartPengunjung" class="h-64"></div>
             </div>
 
+            <!-- Grafik Peminjaman -->
             <div class="bg-white rounded-xl shadow p-6">
                 <h2 class="text-lg font-semibold text-gray-700 mb-4">
                     Grafik Peminjaman Bulanan
                 </h2>
-                <div class="h-64 flex items-center justify-center text-gray-400">
-
-                </div>
+                <div id="chartPeminjaman" class="h-64"></div>
             </div>
+            </div>
+
         </section>
 
     </main>
 
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            // Grafik Pengunjung
+            var chart1 = new ApexCharts(document.querySelector("#chartPengunjung"), {
+                chart: {
+                    type: 'line',
+                    height: 250
+                },
+                series: [{
+                    name: 'Pengunjung',
+                    data: <?php echo json_encode($total); ?>
+                }],
+                xaxis: {
+                    categories: <?php echo json_encode($bulan); ?>
+                },
+                stroke: {
+                    curve: 'smooth'
+                }
+            });
+            chart1.render();
+
+
+            // Grafik Peminjaman
+            var chart2 = new ApexCharts(document.querySelector("#chartPeminjaman"), {
+                chart: {
+                    type: 'bar',
+                    height: 250
+                },
+                series: [{
+                    name: 'Peminjaman',
+                    data: <?php echo json_encode($total_pinjam); ?>
+                }],
+                xaxis: {
+                    categories: <?php echo json_encode($bulan_pinjam); ?>
+                }
+            });
+            chart2.render();
+
+        });
+    </script>
     <!-- akhir conten -->
 
     <script>

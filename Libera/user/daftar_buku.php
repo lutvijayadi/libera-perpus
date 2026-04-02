@@ -22,8 +22,10 @@ $query_buku = mysqli_query($koneksi, "SELECT * FROM buku ORDER BY id_buku DESC")
     <?php include 'partials/sidebar_user.php'; ?>
 
     <!-- konten -->
-    <main class="ml-60 p-4 min-h-screen">
-        <section class="mt-8">
+    <main class="mt-10 p-4 min-h-screen">
+      
+        <section>
+
             <h2 class="text-xl font-semibold text-gray-700 mb-4">Data Buku</h2>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -75,6 +77,7 @@ $query_buku = mysqli_query($koneksi, "SELECT * FROM buku ORDER BY id_buku DESC")
 
             </div>
         </section>
+        
     </main>
 
     <script>

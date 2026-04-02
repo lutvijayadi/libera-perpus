@@ -15,7 +15,7 @@
 
     <!-- conten utama -->
 
-    <main class="ml-60 p-8">
+    <main class="mt-20 p-8">
         <h1 class="text-2xl font-bold mb-6">Pengembalian Buku</h1>
         <form action="../aksi/aksi_pengembalian_buku.php" method="post">
             <div class="mb-4">

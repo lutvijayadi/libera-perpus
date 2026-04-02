@@ -28,9 +28,7 @@ $id_buku = $_GET['id'];
 $query_user = mysqli_query($koneksi, "SELECT * FROM users WHERE id_users='$id_users'");
 $user = mysqli_fetch_assoc($query_user);
 
-// =======================
-// AMBIL DATA BUKU
-// =======================
+
 $query_buku = mysqli_query($koneksi, "SELECT * FROM buku WHERE id_buku='$id_buku'");
 
 // debug kalau query error
