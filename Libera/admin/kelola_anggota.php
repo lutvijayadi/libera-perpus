@@ -8,6 +8,32 @@ $result = mysqli_query($koneksi, $query);
 if (!$result) {
     die("Query error: " . mysqli_error($koneksi));
 }
+
+$keyword = isset($_GET['cari']) ? $_GET['cari'] : "";
+
+$keyword = isset($_GET['cari']) ? trim($_GET['cari']) : "";
+
+if (!empty($keyword)) {
+
+    $keyword = mysqli_real_escape_string($koneksi, $keyword);
+
+    $query = "SELECT * FROM users 
+              WHERE level='siswa' 
+              AND (
+                  nama LIKE '%$keyword%' 
+                  OR username LIKE '%$keyword%' 
+                  OR status LIKE '%$keyword%'
+              )
+              ORDER BY nama ASC";
+
+} else {
+
+    $query = "SELECT * FROM users 
+              WHERE level='siswa' 
+              ORDER BY nama ASC";
+}
+
+$result = mysqli_query($koneksi, $query);
 ?>
 
 <!DOCTYPE html>
@@ -41,11 +67,35 @@ if (!$result) {
 
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-xl font-bold text-gray-800">DAFTAR ANGGOTA</h2>
-                <a href="../admin/tambah_anggota.php"
-                    class="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-all shadow-md hover:shadow-lg text-sm">
-                    <i data-feather="plus" class="w-4 h-4"></i>
-                    Tambah Anggota
-                </a>
+                <form method="GET" class="mb-4 flex items-center gap-2">
+                    <input type="text" name="cari" placeholder="Cari nama, username, atau status..."
+                        value="<?php echo isset($_GET['cari']) ? htmlspecialchars($_GET['cari']) : ''; ?>"
+                        class="px-4 py-2 rounded-lg border border-gray-300 text-sm w-64">
+
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm">
+                        Cari
+                    </button>
+
+                   
+                    <a href="kelola_anggota.php"
+                        class="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 text-sm">
+                        Reset
+                    </a>
+                </form>
+                <div class="flex gap-2">
+                    <a href="../resources/cetak/cetak_anggota.php?cari=<?php echo isset($_GET['cari']) ? urlencode($_GET['cari']) : ''; ?>"
+                        target="_blank"
+                        class="flex items-center gap-2 px-5 py-2.5 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-all shadow-md hover:shadow-lg text-sm">
+                        <i data-feather="printer" class="w-4 h-4"></i>
+                        Cetak
+                    </a>
+                    <!-- Tombol Tambah -->
+                    <a href="../admin/tambah_anggota.php"
+                        class="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-all shadow-md hover:shadow-lg text-sm">
+                        <i data-feather="plus" class="w-4 h-4"></i>
+                        Tambah Anggota
+                    </a>
+                </div>
             </div>
 
             <div class="mt-4 relative overflow-hidden bg-blue-300 shadow-md rounded-2xl border border-blue-200">
@@ -60,53 +110,70 @@ if (!$result) {
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100 bg-white">
-                        <?php
-                        $no = 1;
-                        while ($data = mysqli_fetch_assoc($result)) {
-                            // Logika warna badge status agar konsisten
-                            $status_class = ($data['status'] == 'aktif') ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600';
-                            ?>
-                            <tr class="hover:bg-blue-50/50 transition-colors border-b border-gray-100">
-                                <td class="px-6 py-4 text-center font-medium text-gray-400">
-                                    <?php echo $no++; ?>
-                                </td>
+<?php
+$no = 1;
 
-                                <td class="px-6 py-4">
-                                    <div class="font-semibold text-gray-700"><?php echo $data['nama']; ?></div>
-                                </td>
+if (mysqli_num_rows($result) > 0) {
+    while ($data = mysqli_fetch_assoc($result)) {
 
-                                <td class="px-6 py-4 font-medium text-gray-600">
-                                    @<?php echo $data['username']; ?>
-                                </td>
+        $status_class = ($data['status'] == 'aktif') 
+            ? 'bg-green-100 text-green-600' 
+            : 'bg-red-100 text-red-600';
+?>
+        <tr class="hover:bg-blue-50/50 transition-colors border-b border-gray-100">
+            <td class="px-6 py-4 text-center text-gray-400"><?php echo $no++; ?></td>
 
-                                <td class="px-6 py-4 text-center">
-                                    <span
-                                        class="px-3 py-1 rounded-full text-[10px] font-bold uppercase <?php echo $status_class; ?>">
-                                        <?php echo $data['status']; ?>
-                                    </span>
-                                </td>
+            <td class="px-6 py-4">
+                <div class="font-semibold text-gray-700"><?php echo $data['nama']; ?></div>
+            </td>
 
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center justify-center gap-2">
-                                        <a href="edit_user.php?id=<?php echo $data['id_users']; ?>"
-                                            class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-all"
-                                            title="Edit">
-                                            <i data-feather="edit-2" class="w-4 h-4"></i>
-                                        </a>
+            <td class="px-6 py-4 text-gray-600">
+                @<?php echo $data['username']; ?>
+            </td>
 
-                                        <a href="../aksi/aksi_hapus_user.php?id=<?php echo $data['id_users']; ?>"
-                                            onclick="return confirm('Yakin ingin menghapus user ini?')"
-                                            class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-all"
-                                            title="Hapus">
-                                            <i data-feather="trash-2" class="w-4 h-4"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                        <?php } ?>
-                    </tbody>
+            <td class="px-6 py-4 text-center">
+                <span class="px-3 py-1 rounded-full text-[10px] font-bold <?php echo $status_class; ?>">
+                    <?php echo $data['status']; ?>
+                </span>
+            </td>
+
+            <td class="px-6 py-4 text-center">
+                <div class="flex justify-center gap-2">
+                    <a href="edit_anggota.php?id=<?php echo $data['id_users']; ?>"
+                        class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg">
+                        <i data-feather="edit-2" class="w-4 h-4"></i>
+                    </a>
+
+                    <a href="../aksi/aksi_hapus_anggota.php?id=<?php echo $data['id_users']; ?>"
+                        onclick="return confirm('Yakin ingin menghapus user ini?')"
+                        class="p-2 text-red-500 hover:bg-red-50 rounded-lg">
+                        <i data-feather="trash-2" class="w-4 h-4"></i>
+                    </a>
+                </div>
+            </td>
+        </tr>
+<?php
+    }
+} else {
+?>
+    <tr>
+        <td colspan="5" class="text-center py-10 text-gray-500 font-semibold">
+            🔍 Data tidak ditemukan
+        </td>
+    </tr>
+<?php
+}
+?>
+</tbody>
                 </table>
             </div>
+             <?php if (mysqli_num_rows($result) == 0): ?>
+                        <tr>
+                            <td colspan="5" class="text-center py-10 text-gray-500 font-semibold">
+                                Data tidak ditemukan
+                            </td>
+                        </tr>
+                    <?php endif; ?>
         </section>
     </main>
 

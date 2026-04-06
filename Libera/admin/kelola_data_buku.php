@@ -3,6 +3,22 @@
 include '../config/koneksi.php';
 
 $query_buku = mysqli_query($koneksi, "SELECT * FROM buku ORDER BY judul_buku DESC");
+
+$keyword = isset($_GET['cari']) ? trim($_GET['cari']) : "";
+
+if (!empty($keyword)) {
+    $keyword = mysqli_real_escape_string($koneksi, $keyword);
+
+    $query = "SELECT * FROM buku 
+              WHERE judul_buku LIKE '%$keyword%' 
+              OR penerbit LIKE '%$keyword%' 
+              OR stok LIKE '%$keyword%' 
+              ORDER BY judul_buku DESC";
+} else {
+    $query = "SELECT * FROM buku ORDER BY judul_buku DESC";
+}
+
+$query_buku = mysqli_query($koneksi, $query);
 ?>
 
 <!DOCTYPE html>
@@ -34,13 +50,32 @@ $query_buku = mysqli_query($koneksi, "SELECT * FROM buku ORDER BY judul_buku DES
                     silakan masukan buku yang akan ditambahkan ke dalam perpustakaan.
                 </p>
             </div>
-            <a href="tambah_buku.php"
-                class="inline-block mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                Tambah Buku
-            </a>
+            <div class="mt-10 flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold text-gray-800">DAFTAR BUKU</h2>
+                <form method="GET" class="flex items-center gap-2">
+                    <input type="text" name="cari" placeholder="Cari judul buku, penerbit..."
+                        value="<?php echo isset($_GET['cari']) ? htmlspecialchars($_GET['cari']) : ''; ?>"
+                        class="px-4 py-2 rounded-lg border border-gray-300 text-sm w-64">
+
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm">
+                        Cari
+                    </button>
+
+                    <a href="kelola_data_buku.php"
+                        class="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 text-sm">
+                        Reset
+                    </a>
+                </form>
+                <div class="flex gap-2">
+                    <!-- Tombol Tambah -->
+                    <a href="../admin/tambah_buku.php"
+                        class="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-all shadow-md hover:shadow-lg text-sm">
+                        <i data-feather="plus" class="w-4 h-4"></i>
+                        Tambah buku
+                    </a>
+                </div>
         </section>
         <section class="mt-8">
-            <h2 class="text-xl font-semibold text-gray-800 mb-4">DATA BUKU</h2>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 <?php while ($buku = mysqli_fetch_assoc($query_buku)) { ?>
@@ -91,8 +126,9 @@ $query_buku = mysqli_query($koneksi, "SELECT * FROM buku ORDER BY judul_buku DES
             </div>
         </section>
     </main>
-     <script>
+    <script>
         feather.replace();
     </script>
 </body>
+
 </html>
