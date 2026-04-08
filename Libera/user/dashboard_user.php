@@ -35,7 +35,7 @@ $total_pinjam = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as to
     <script src="https://unpkg.com/feather-icons"></script>
 </head>
 
-<body class="bg-[#B0FFFA] font-poppins">
+<body class=" font-poppins">
 
     <?php include 'partials/sidebar_user.php'; ?>
 

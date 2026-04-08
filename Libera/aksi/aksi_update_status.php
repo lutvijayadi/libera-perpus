@@ -1,16 +1,18 @@
 <?php
 session_start();
 include '../config/koneksi.php';
-
-// cek login (optional tapi bagus)
-if (!isset($_SESSION['username'])) {
+if (!isset($_SESSION['id_users'])) {
     header("Location: ../auth/login.php");
     exit;
 }
 
 // ambil data dari form
 $id_transaksi = $_POST['id_transaksi'];
-$status = $_POST['action']; // Disetujui / Ditolak
+$status = strtolower($_POST['action']); 
+
+if (!in_array($status, ['disetujui', 'ditolak'])) {
+    die("Status tidak valid!");
+}
 
 // ambil data transaksi + buku
 $query = mysqli_query($koneksi, "
@@ -57,6 +59,6 @@ mysqli_query($koneksi, "
 ");
 
 
-header("Location: notifikasi.php");
+header("Location: ../admin/transaksi.php");
 exit;
 ?>

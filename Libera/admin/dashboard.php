@@ -36,18 +36,15 @@ $query_pengunjung = mysqli_query($koneksi, "
     GROUP BY MONTH(IFNULL(created_at, NOW()))
     ORDER BY bulan
 ");
+if (!$query_pengunjung) {
+    die("Query pengunjung error: " . mysqli_error($koneksi));
+}
+$bulan = [];
+$total = [];
 
-$query_peminjaman = mysqli_query($koneksi, "
-    SELECT 
-        MONTH(tanggal_pinjam) as bulan, 
-        COUNT(*) as total
-    FROM transaksi
-    GROUP BY MONTH(tanggal_pinjam)
-    ORDER BY bulan
-");
-
-if (!$query_peminjaman) {
-    die("Query error: " . mysqli_error($koneksi));
+while ($row = mysqli_fetch_assoc($query_pengunjung)) {
+    $bulan[] = $row['bulan'];
+    $total[] = $row['total'];
 }
 
 $query_anggota = mysqli_query($koneksi, "
@@ -105,7 +102,7 @@ $data_pengunjung = mysqli_fetch_assoc($query_pengunjung_bulan);
         <section>
             <div class="mt-6 bg-gradient-to-r from-blue-600 to-blue-500 p-6 rounded-xl shadow text-white">
                 <h2 class="text-2xl font-semibold mb-1">
-                    Halo, <?php echo $user['nama']; ?>
+                    Halo, <?php echo isset($user['nama']) ? $user['nama'] : 'User'; ?>
                 </h2>
                 <p class="text-sm opacity-90">
                     Selamat datang di dashboard admin Libera. Kelola data perpustakaan dengan mudah.
@@ -159,7 +156,7 @@ $data_pengunjung = mysqli_fetch_assoc($query_pengunjung_bulan);
                 <a href="../admin/notifications.php"
                     class="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-all shadow-md hover:shadow-lg text-sm">
                     <i data-feather="message-square" class="w-4 h-4"></i>
-                    lihat notif
+                    lihat notifikasi
                 </a>
             </div>
         </section>
@@ -171,7 +168,74 @@ $data_pengunjung = mysqli_fetch_assoc($query_pengunjung_bulan);
                 <h2 class="text-lg font-semibold text-gray-700 mb-4">
                     Grafik Pengunjung Bulanan
                 </h2>
-                <div id="chartPengunjung" class="h-64"></div>
+
+
+                <div class="flex items-center mb-3">
+                    <div class="flex items-center space-x-1">
+                        <svg class="w-5 h-5 text-fg-yellow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
+                        </svg>
+                        <svg class="w-5 h-5 text-fg-yellow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
+                        </svg>
+                        <svg class="w-5 h-5 text-fg-yellow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
+                        </svg>
+                        <svg class="w-5 h-5 text-fg-yellow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
+                        </svg>
+                        <svg class="w-5 h-5 text-fg-disabled" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
+                        </svg>
+                    </div>
+                    <p class="ms-2 text-sm font-medium text-body">4.95 out of 5</p>
+                </div>
+                <p class="text-sm font-medium text-body">1,745 global ratings</p>
+                <div class="flex items-center mt-4">
+                    <a href="#" class="text-sm font-medium text-fg-brand hover:underline w-14">5 star</a>
+                    <div class="w-2/4 h-4 mx-4 bg-neutral-quaternary rounded-base">
+                        <div class="h-4 bg-warning rounded-base" style="width: 70%"></div>
+                    </div>
+                    <span class="text-sm font-medium text-body">70%</span>
+                </div>
+                <div class="flex items-center mt-4">
+                    <a href="#" class="text-sm font-medium text-fg-brand hover:underline w-14">4 star</a>
+                    <div class="w-2/4 h-4 mx-4 bg-neutral-quaternary rounded-base">
+                        <div class="h-4 bg-warning rounded-base" style="width: 17%"></div>
+                    </div>
+                    <span class="text-sm font-medium text-body">17%</span>
+                </div>
+                <div class="flex items-center mt-4">
+                    <a href="#" class="text-sm font-medium text-fg-brand hover:underline w-14">3 star</a>
+                    <div class="w-2/4 h-4 mx-4 bg-neutral-quaternary rounded-base">
+                        <div class="h-4 bg-warning rounded-base" style="width: 8%"></div>
+                    </div>
+                    <span class="text-sm font-medium text-body">8%</span>
+                </div>
+                <div class="flex items-center mt-4">
+                    <a href="#" class="text-sm font-medium text-fg-brand hover:underline w-14">2 star</a>
+                    <div class="w-2/4 h-4 mx-4 bg-neutral-quaternary rounded-base">
+                        <div class="h-4 bg-warning rounded-base" style="width:4%"></div>
+                    </div>
+                    <span class="text-sm font-medium text-body">4%</span>
+                </div>
+                <div class="flex items-center mt-4">
+                    <a href="#" class="text-sm font-medium text-fg-brand hover:underline w-14">1 star</a>
+                    <div class="w-2/4 h-4 mx-4 bg-neutral-quaternary rounded-base">
+                        <div class="h-4 bg-warning rounded-base" style="width:1%"></div>
+                    </div>
+                    <span class="text-sm font-medium text-body">1%</span>
+                </div>
             </div>
 
             <!-- Grafik Peminjaman -->
@@ -179,7 +243,75 @@ $data_pengunjung = mysqli_fetch_assoc($query_pengunjung_bulan);
                 <h2 class="text-lg font-semibold text-gray-700 mb-4">
                     Grafik Peminjaman Bulanan
                 </h2>
-                <div id="chartPeminjaman" class="h-64"></div>
+
+
+                <div class="flex items-center mb-3">
+                    <div class="flex items-center space-x-1">
+                        <svg class="w-5 h-5 text-fg-yellow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
+                        </svg>
+                        <svg class="w-5 h-5 text-fg-yellow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
+                        </svg>
+                        <svg class="w-5 h-5 text-fg-yellow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
+                        </svg>
+                        <svg class="w-5 h-5 text-fg-yellow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
+                        </svg>
+                        <svg class="w-5 h-5 text-fg-disabled" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
+                        </svg>
+                    </div>
+                    <p class="ms-2 text-sm font-medium text-body">4.95 out of 5</p>
+                </div>
+                <p class="text-sm font-medium text-body">1,745 global ratings</p>
+                <div class="flex items-center mt-4">
+                    <a href="#" class="text-sm font-medium text-fg-brand hover:underline w-14">5 star</a>
+                    <div class="w-2/4 h-4 mx-4 bg-neutral-quaternary rounded-base">
+                        <div class="h-4 bg-warning rounded-base" style="width: 70%"></div>
+                    </div>
+                    <span class="text-sm font-medium text-body">70%</span>
+                </div>
+                <div class="flex items-center mt-4">
+                    <a href="#" class="text-sm font-medium text-fg-brand hover:underline w-14">4 star</a>
+                    <div class="w-2/4 h-4 mx-4 bg-neutral-quaternary rounded-base">
+                        <div class="h-4 bg-warning rounded-base" style="width: 17%"></div>
+                    </div>
+                    <span class="text-sm font-medium text-body">17%</span>
+                </div>
+                <div class="flex items-center mt-4">
+                    <a href="#" class="text-sm font-medium text-fg-brand hover:underline w-14">3 star</a>
+                    <div class="w-2/4 h-4 mx-4 bg-neutral-quaternary rounded-base">
+                        <div class="h-4 bg-warning rounded-base" style="width: 8%"></div>
+                    </div>
+                    <span class="text-sm font-medium text-body">8%</span>
+                </div>
+                <div class="flex items-center mt-4">
+                    <a href="#" class="text-sm font-medium text-fg-brand hover:underline w-14">2 star</a>
+                    <div class="w-2/4 h-4 mx-4 bg-neutral-quaternary rounded-base">
+                        <div class="h-4 bg-warning rounded-base" style="width:4%"></div>
+                    </div>
+                    <span class="text-sm font-medium text-body">4%</span>
+                </div>
+                <div class="flex items-center mt-4">
+                    <a href="#" class="text-sm font-medium text-fg-brand hover:underline w-14">1 star</a>
+                    <div class="w-2/4 h-4 mx-4 bg-neutral-quaternary rounded-base">
+                        <div class="h-4 bg-warning rounded-base" style="width:1%"></div>
+                    </div>
+                    <span class="text-sm font-medium text-body">1%</span>
+                </div>
+
             </div>
             </div>
 

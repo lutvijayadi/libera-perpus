@@ -2,9 +2,6 @@
 session_start();
 include '../config/koneksi.php';
 
-// =======================
-// CEK LOGIN
-// =======================
 if (!isset($_SESSION['id_users'])) {
     echo "Silakan login dulu!";
     exit;
@@ -12,9 +9,6 @@ if (!isset($_SESSION['id_users'])) {
 
 $id_users = $_SESSION['id_users'];
 
-// =======================
-// CEK ID BUKU DARI URL
-// =======================
 if (!isset($_GET['id']) || empty($_GET['id'])) {
     echo "ID buku tidak ditemukan!";
     exit;
@@ -22,23 +16,18 @@ if (!isset($_GET['id']) || empty($_GET['id'])) {
 
 $id_buku = $_GET['id'];
 
-// =======================
-// AMBIL DATA USER
-// =======================
+// ambil user
 $query_user = mysqli_query($koneksi, "SELECT * FROM users WHERE id_users='$id_users'");
 $user = mysqli_fetch_assoc($query_user);
 
-
-$query_buku = mysqli_query($koneksi, "SELECT * FROM buku WHERE id_buku='$id_buku'");
-
-// debug kalau query error
-if (!$query_buku) {
-    die("Query error: " . mysqli_error($koneksi));
+if (!$user) {
+    die("User tidak ditemukan!");
 }
 
+// ambil buku
+$query_buku = mysqli_query($koneksi, "SELECT * FROM buku WHERE id_buku='$id_buku'");
 $buku = mysqli_fetch_assoc($query_buku);
 
-// cek buku ada atau tidak
 if (!$buku) {
     echo "Buku tidak ditemukan!";
     exit;
@@ -46,56 +35,38 @@ if (!$buku) {
 ?>
 
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <title>Pinjam Buku</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+<meta charset="UTF-8">
+<title>Pinjam Buku</title>
+<script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-[#B0FFFA] flex justify-center items-center min-h-screen">
 
-    <div class="max-w-md mx-auto mt-10 bg-white p-6 rounded-xl shadow">
+<div class="bg-white p-6 rounded-xl shadow w-full max-w-md">
 
-        <h1 class="text-xl font-bold mb-4">Pinjam Buku</h1>
+<h2 class="text-lg font-bold mb-4">Form Peminjaman Buku</h2>
 
-        <!-- INFO -->
-        <div class="mb-4">
-            <p><strong>Nama:</strong> <?= $user['nama']; ?></p>
-            <p><strong>Judul Buku:</strong> <?= $buku['judul_buku']; ?></p>
-            <p><strong>Stok:</strong> <?= $buku['stok']; ?></p>
-        </div>
+<p><b>Nama:</b> <?= $user['nama'] ?: 'Belum ada nama'; ?></p>
+<p><b>Buku:</b> <?= $buku['judul_buku']; ?></p>
+<p><b>Stok:</b> <?= $buku['stok']; ?></p>
 
-        <!-- FORM -->
-        <form action="../aksi/aksi_peminjaman_buku.php" method="post">
+<form action="../aksi/aksi_peminjaman_buku.php" method="post" class="mt-4 space-y-3">
 
-            <!-- HIDDEN -->
-            <input type="hidden" name="id_buku" value="<?= $buku['id_buku']; ?>">
-            <input type="hidden" name="id_users" value="<?= $user['id_users']; ?>">
+<input type="hidden" name="id_buku" value="<?= $buku['id_buku']; ?>">
 
-            <div class="mb-3">
-                <label class="block text-sm">Tanggal Pinjam</label>
-                <input type="date" name="tanggal_pinjam" required class="w-full border p-2 rounded">
-            </div>
+<input type="date" name="tanggal_pinjam" required class="w-full border p-2">
+<input type="date" name="tanggal_kembali" required class="w-full border p-2">
+<input type="number" name="total_pinjam" min="1" required class="w-full border p-2">
 
-            <div class="mb-3">
-                <label class="block text-sm">Tanggal Kembali</label>
-                <input type="date" name="tanggal_kembali" required class="w-full border p-2 rounded">
-            </div>
+<button class="bg-blue-600 text-white px-4 py-2 rounded w-full">
+Pinjam Buku
+</button>
 
-            <div class="mb-3">
-                <label class="block text-sm">Jumlah Pinjam</label>
-                <input type="number" name="total_pinjam" min="1" required class="w-full border p-2 rounded">
-            </div>
+</form>
 
-            <button type="submit" name="pinjam" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
-                Pinjam Buku
-            </button>
-
-        </form>
-
-    </div>
+</div>
 
 </body>
-
 </html>

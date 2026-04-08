@@ -24,37 +24,84 @@ $result = mysqli_query($koneksi, $query);
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Cetak Transaksi</title>
+    <title></title>
     <style>
         body {
-            font-family: Arial;
+            font-family: "Times New Roman", serif;
+            margin: 40px;
         }
-        h2 {
+
+        .kop {
             text-align: center;
+            line-height: 1.5;
         }
+
+        .kop h2, .kop h3 {
+            margin: 0;
+        }
+
+        .line {
+            border-top: 3px solid black;
+            margin: 10px 0 20px 0;
+        }
+
+        .judul {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            font-size: 14px;
         }
+
         table, th, td {
             border: 1px solid black;
-            padding: 8px;
         }
-        th {
-            background: #eee;
+
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+
+        .ttd {
+            margin-top: 50px;
+            width: 100%;
+        }
+
+        .ttd-kanan {
+            float: right;
+            text-align: center;
+        }
+
+        .clear {
+            clear: both;
         }
     </style>
 </head>
 
 <body onload="window.print()">
 
-    <h2>Data Transaksi Perpustakaan</h2>
+    <!-- KOP SURAT -->
+    <div class="kop">
+        <h2>PERPUSTAKAAN SEKOLAH</h2>
+        <h3>SMK AL- MADANI GARUT</h3>
+        <p>Jl. Raya Samarang No.2332, Desa/Kecamatan Samarang, Kabupaten Garut, Jawa Barat, Kode Pos 44161</p>
+    </div>
 
+    <div class="line"></div>
+
+    <!-- JUDUL -->
+    <div class="judul">
+        <h3><u>LAPORAN DATA TRANSAKSI</u></h3>
+    </div>
+
+    <!-- TABEL -->
     <table>
         <thead>
             <tr>
-                <th>ID</th>
+                <th>No</th>
                 <th>Nama</th>
                 <th>Buku</th>
                 <th>Tgl Pinjam</th>
@@ -63,11 +110,13 @@ $result = mysqli_query($koneksi, $query);
             </tr>
         </thead>
         <tbody>
-            <?php while ($row = mysqli_fetch_assoc($result)) { ?>
+            <?php 
+            $no = 1;
+            while ($row = mysqli_fetch_assoc($result)) { ?>
                 <tr>
-                    <td><?php echo $row['id_transaksi']; ?></td>
-                    <td><?php echo $row['nama']; ?></td>
-                    <td><?php echo $row['judul_buku']; ?></td>
+                    <td><?php echo $no++; ?></td>
+                    <td style="text-align:left;"><?php echo $row['nama']; ?></td>
+                    <td style="text-align:left;"><?php echo $row['judul_buku']; ?></td>
                     <td><?php echo date('d-m-Y', strtotime($row['tanggal_pinjam'])); ?></td>
                     <td><?php echo date('d-m-Y', strtotime($row['tanggal_kembali'])); ?></td>
                     <td><?php echo $row['status']; ?></td>
@@ -75,6 +124,20 @@ $result = mysqli_query($koneksi, $query);
             <?php } ?>
         </tbody>
     </table>
+
+    <!-- TANDA TANGAN -->
+    <div class="ttd">
+        <div class="ttd-kanan">
+            <p>Garut, <?php echo date("d M Y"); ?></p>
+            <p>Petugas Perpustakaan</p>
+
+            <br><br><br>
+
+            <p><u>_____________________</u></p>
+        </div>
+    </div>
+
+    <div class="clear"></div>
 
 </body>
 </html>

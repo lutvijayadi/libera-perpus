@@ -1,9 +1,11 @@
 <?php
 include '../config/koneksi.php';
 
-// Query untuk mengambil data transaksi
-// Jika tabel transaksi belum memiliki id_anggota, kita tetap bisa menampilkan data
+
 $query = "SELECT * FROM transaksi ORDER BY id_transaksi DESC";
+$result = mysqli_query($koneksi, $query);
+
+$query = "SELECT * FROM users ORDER BY id_users DESC";
 $result = mysqli_query($koneksi, $query);
 
 if (!$result) {
@@ -82,12 +84,6 @@ $result = mysqli_query($koneksi, $query);
                         class="flex items-center gap-2 px-5 py-2.5 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-all shadow-md hover:shadow-lg text-sm">
                         <i data-feather="printer" class="w-4 h-4"></i>
                         Cetak
-                    </a>
-                    <!-- Tombol Tambah -->
-                    <a href="../admin/tambah_anggota.php"
-                        class="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-all shadow-md hover:shadow-lg text-sm">
-                        <i data-feather="plus" class="w-4 h-4"></i>
-                        Tambah transaksi
                     </a>
                 </div>
             </div>

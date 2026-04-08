@@ -33,7 +33,7 @@ $query_notif = mysqli_query($koneksi, "SELECT * FROM notif ORDER BY created_at D
     <title>Notifikasi - Libera Admin</title>
 </head>
 
-<body class="bg-gray-100 font-poppins">
+<body class="bg-[#B0FFFA] font-poppins">
 
     <?php include 'partials/sidebar.php'; ?>
 

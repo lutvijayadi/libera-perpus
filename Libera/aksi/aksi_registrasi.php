@@ -2,42 +2,28 @@
 include '../config/koneksi.php';
 
 if (isset($_POST['daftar'])) {
+
     $nama = mysqli_real_escape_string($koneksi, $_POST['nama']);
     $username = mysqli_real_escape_string($koneksi, $_POST['username']);
-    // Menggunakan password_hash (Sangat disarankan untuk keamanan)
-    $password_raw = $_POST['password']; 
-    $password_hashed = password_hash($password_raw, PASSWORD_DEFAULT);
-    $level = "siswa"; // Set level default
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $kelas = mysqli_real_escape_string($koneksi, $_POST['kelas']);
 
-    // Mulai Transaksi
-    mysqli_begin_transaction($koneksi);
+    $level = "siswa";
+    $status = "aktif";
 
-    try {
-        // 1. Simpan ke tabel users (untuk login)
-        // Pastikan kolom di tabel users sesuai (username, password, level)
-        $query_user = "INSERT INTO users (username, password, level) VALUES ('$username', '$password_hashed', '$level')";
-        mysqli_query($koneksi, $query_user);
-
-        // 2. Simpan ke tabel anggota (untuk data profil perpustakaan)
-        // Kita gunakan variabel $nama untuk kolom nama di tabel anggota
-        $query_anggota = "INSERT INTO anggota (nama) VALUES ('$nama')";
-        mysqli_query($koneksi, $query_anggota);
-
-        // Jika kedua query berhasil, simpan permanen
-        mysqli_commit($koneksi);
-
-        header("location:../auth/login.php?pesan=berhasil_registrasi");
-        exit;
-
-    } catch (Exception $e) {
-        // Jika ada error, batalkan semua perubahan di database
-        mysqli_rollback($koneksi);
-        header("location:../auth/registrasiuser.php?pesan=gagal_registrasi");
+    // cek username
+    $cek = mysqli_query($koneksi, "SELECT * FROM users WHERE username='$username'");
+    if (mysqli_num_rows($cek) > 0) {
+        echo "<script>alert('Username sudah digunakan!');history.back();</script>";
         exit;
     }
 
-} else {
-    header("location:../auth/registrasiuser.php");
+    mysqli_query($koneksi, "INSERT INTO users 
+    (nama, username, password, kelas, level, status) 
+    VALUES 
+    ('$nama', '$username', '$password', '$kelas', '$level', '$status')");
+
+    header("location:../auth/login.php?pesan=berhasil");
     exit;
 }
 ?>

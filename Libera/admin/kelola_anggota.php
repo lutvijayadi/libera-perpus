@@ -76,7 +76,7 @@ $result = mysqli_query($koneksi, $query);
                         Cari
                     </button>
 
-                   
+
                     <a href="kelola_anggota.php"
                         class="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 text-sm">
                         Reset
@@ -110,70 +110,62 @@ $result = mysqli_query($koneksi, $query);
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100 bg-white">
-<?php
-$no = 1;
+                        <?php
+                        $no = 1;
 
-if (mysqli_num_rows($result) > 0) {
-    while ($data = mysqli_fetch_assoc($result)) {
+                        if (mysqli_num_rows($result) > 0) {
+                            while ($data = mysqli_fetch_assoc($result)) {
 
-        $status_class = ($data['status'] == 'aktif') 
-            ? 'bg-green-100 text-green-600' 
-            : 'bg-red-100 text-red-600';
-?>
-        <tr class="hover:bg-blue-50/50 transition-colors border-b border-gray-100">
-            <td class="px-6 py-4 text-center text-gray-400"><?php echo $no++; ?></td>
+                                $status_class = ($data['status'] == 'aktif')
+                                    ? 'bg-green-100 text-green-600'
+                                    : 'bg-red-100 text-red-600';
+                                ?>
+                                <tr class="hover:bg-blue-50/50 transition-colors border-b border-gray-100">
+                                    <td class="px-6 py-4 text-center text-gray-400"><?php echo $no++; ?></td>
 
-            <td class="px-6 py-4">
-                <div class="font-semibold text-gray-700"><?php echo $data['nama']; ?></div>
-            </td>
+                                    <td class="px-6 py-4">
+                                        <div class="font-semibold text-gray-700"><?php echo $data['nama']; ?></div>
+                                    </td>
 
-            <td class="px-6 py-4 text-gray-600">
-                @<?php echo $data['username']; ?>
-            </td>
+                                    <td class="px-6 py-4 text-gray-600">
+                                        <?php echo $data['kelas']; ?>
+                                    </td>
 
-            <td class="px-6 py-4 text-center">
-                <span class="px-3 py-1 rounded-full text-[10px] font-bold <?php echo $status_class; ?>">
-                    <?php echo $data['status']; ?>
-                </span>
-            </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <span class="px-3 py-1 rounded-full text-[10px] font-bold <?php echo $status_class; ?>">
+                                            <?php echo $data['status']; ?>
+                                        </span>
+                                    </td>
 
-            <td class="px-6 py-4 text-center">
-                <div class="flex justify-center gap-2">
-                    <a href="edit_anggota.php?id=<?php echo $data['id_users']; ?>"
-                        class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg">
-                        <i data-feather="edit-2" class="w-4 h-4"></i>
-                    </a>
+                                    <td class="px-6 py-4 text-center">
+                                        <div class="flex justify-center gap-2">
+                                            <a href="edit_anggota.php?id=<?php echo $data['id_users']; ?>"
+                                                class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg">
+                                                <i data-feather="edit-2" class="w-4 h-4"></i>
+                                            </a>
 
-                    <a href="../aksi/aksi_hapus_anggota.php?id=<?php echo $data['id_users']; ?>"
-                        onclick="return confirm('Yakin ingin menghapus user ini?')"
-                        class="p-2 text-red-500 hover:bg-red-50 rounded-lg">
-                        <i data-feather="trash-2" class="w-4 h-4"></i>
-                    </a>
-                </div>
-            </td>
-        </tr>
-<?php
-    }
-} else {
-?>
-    <tr>
-        <td colspan="5" class="text-center py-10 text-gray-500 font-semibold">
-            🔍 Data tidak ditemukan
-        </td>
-    </tr>
-<?php
-}
-?>
-</tbody>
+                                            <a href="../aksi/aksi_hapus_anggota.php?id=<?php echo $data['id_users']; ?>"
+                                                onclick="return confirm('Yakin ingin menghapus user ini?')"
+                                                class="p-2 text-red-500 hover:bg-red-50 rounded-lg">
+                                                <i data-feather="trash-2" class="w-4 h-4"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <?php
+                            }
+                        }
+                        ?>
+                    </tbody>
                 </table>
             </div>
-             <?php if (mysqli_num_rows($result) == 0): ?>
-                        <tr>
-                            <td colspan="5" class="text-center py-10 text-gray-500 font-semibold">
-                                Data tidak ditemukan
-                            </td>
-                        </tr>
-                    <?php endif; ?>
+            <?php if (mysqli_num_rows($result) == 0): ?>
+                <tr>
+                    <td colspan="5" class="text-center py-10 text-gray-500 font-semibold">
+                        Data tidak ditemukan
+                    </td>
+                </tr>
+            <?php endif; ?>
         </section>
     </main>
 

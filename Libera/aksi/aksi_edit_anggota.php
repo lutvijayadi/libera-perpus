@@ -5,8 +5,10 @@ if (isset($_POST['edit'])) {
 
     $id = mysqli_real_escape_string($koneksi, $_POST['id_users']);
     $nama = mysqli_real_escape_string($koneksi, $_POST['nama']);
-    $kelas = mysqli_real_escape_string($koneksi, $_POST['kelas']);
     $status = mysqli_real_escape_string($koneksi, $_POST['status']);
+
+    // kalau kamu pakai kelas
+    $kelas = mysqli_real_escape_string($koneksi, $_POST['kelas']);
 
     $query = "UPDATE users 
               SET nama='$nama', kelas='$kelas', status='$status' 
