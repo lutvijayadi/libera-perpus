@@ -23,6 +23,6 @@ if ($data && $password == $data['password']) {
     exit;
 
 } else {
-    header("location:../index/index.php?pesan=gagal");
+    header("location:../auth/login.php?pesan=gagal");
     exit;
 }

@@ -52,11 +52,6 @@ if (isset($_POST['tambah'])) {
         <div class="p-6">
             <form action="../aksi/aksi_tambah_anggota.php" method="post" class="space-y-4">
                 <div>
-                    <label class="text-sm mb-1">ID User</label>
-                    <input type="number" name="id_users" required class="w-full p-2 border rounded-lg"
-                        placeholder="Masukkan ID (contoh: 10)">
-                </div>
-                <div>
                     <label class="text-sm mb-1">Nama</label>
                     <input type="text" name="nama" required class="w-full p-2 border rounded-lg">
                 </div>

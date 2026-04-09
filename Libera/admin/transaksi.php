@@ -88,86 +88,107 @@ $result = mysqli_query($koneksi, $query);
                 </div>
             </div>
 
-            <div class="mt-4 relative overflow-hidden bg-blue-300 shadow-md rounded-2xl border border-blue-200">
-                <table class="w-full text-sm text-left text-gray-600">
-                    <thead class="text-xs uppercase bg-blue-600 text-white border-b border-gray-200">
-                        <tr>
-                            <th class="px-6 py-4 font-bold text-center">ID</th>
-                            <th class="px-6 py-4 font-bold">Nama Anggota</th>
-                            <th class="px-6 py-4 font-bold">Judul Buku</th>
-                            <th class="px-6 py-4 font-bold">Tgl Pinjam</th>
-                            <th class="px-6 py-4 font-bold">Tgl Kembali</th>
-                            <th class="px-6 py-4 font-bold text-center">Status</th>
-                            <th class="px-6 py-4 font-bold text-center">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100 bg-white">
-                        <?php
-                        while ($row = mysqli_fetch_assoc($result)) {
-                            // Logika warna badge status
-                            $status_class = "";
-                            if ($row['status'] == 'dipinjam') {
-                                $status_class = "bg-orange-100 text-orange-600";
-                            } elseif ($row['status'] == 'kembali') {
-                                $status_class = "bg-green-100 text-green-600";
-                            } else {
-                                $status_class = "bg-gray-100 text-gray-600";
-                            }
-                            ?>
-                            <tr class="hover:bg-blue-50/50 transition-colors">
-                                <td class="px-6 py-4 text-center font-medium text-gray-400">
-                                    <?php echo $row['id_transaksi']; ?>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="font-semibold text-gray-900">
-                                        <?php echo isset($row['nama']) ? $row['nama'] : '-'; ?>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="text-gray-700 italic">"<?php echo $row['judul_buku']; ?>"</div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <span class="flex items-center gap-1">
-                                        <i data-feather="calendar" class="w-3 h-3 text-blue-400"></i>
-                                        <?php echo date('d M Y', strtotime($row['tanggal_pinjam'])); ?>
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <span class="flex items-center gap-1">
-                                        <i data-feather="calendar" class="w-3 h-3 text-red-300"></i>
-                                        <?php echo date('d M Y', strtotime($row['tanggal_kembali'])); ?>
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 text-center">
-                                    <span
-                                        class="px-3 py-1 rounded-full text-xs font-bold uppercase <?php echo $status_class; ?>">
-                                        <?php echo $row['status']; ?>
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center justify-center gap-2">
-                                        <a href="edit_transaksi.php?id_transaksi=<?php echo $row['id_transaksi']; ?>
-                                            class=" p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-all"
-                                            title="Edit Transaksi">
-                                            <i data-feather="edit-2" class="w-4 h-4"></i>
-                                        </a>
-                                        <a href="../aksi/aksi_hapus_transaksi.php?id_transaksi=<?php echo $row['id_transaksi']; ?>
-                                            onclick=" return confirm('Yakin ingin menghapus data transaksi ini?')"
-                                            class="p-2 text-red-500 hover        :bg-red-50 rounded-lg transition-all"
-                                            title="Hapus">
-                                            <i data-feather="trash-2" class="w-4 h-4"></i>
-                                        </a>
-                                    </div>
-                                </td>
+            <section>
+                <div class="mt-4 relative overflow-hidden bg-blue-300 shadow-md rounded-2xl border border-blue-200">
+                    <table class="w-full text-sm text-left text-gray-600">
+                        <thead class="text-xs uppercase bg-blue-600 text-white border-b border-gray-200">
+                            <tr>
+                                <th class="px-6 py-4 font-bold text-center">ID</th>
+                                <th class="px-6 py-4 font-bold">Nama Anggota</th>
+                                <th class="px-6 py-4 font-bold">Judul Buku</th>
+                                <th class="px-6 py-4 font-bold">Tgl Pinjam</th>
+                                <th class="px-6 py-4 font-bold">Tgl Kembali</th>
+                                <th class="px-6 py-4 font-bold text-center">Status</th>
+                                <th class="px-6 py-4 font-bold text-center">Selesai</th>
+                                <th class="px-6 py-4 font-bold text-center">Aksi</th>
+
                             </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100 bg-white">
                             <?php
-                        }
-                        mysqli_close($koneksi);
-                        ?>
-                    </tbody>
-                </table>
-            </div>
-        </section>
+                            while ($row = mysqli_fetch_assoc($result)) {
+                                // Logika warna badge status
+                                $status_class = "";
+                                if ($row['status'] == 'dipinjam') {
+                                    $status_class = "bg-orange-100 text-orange-600";
+                                } elseif ($row['status'] == 'kembali') {
+                                    $status_class = "bg-green-100 text-green-600";
+                                } else {
+                                    $status_class = "bg-gray-100 text-gray-600";
+                                }
+                                ?>
+                                <tr class="hover:bg-blue-50/50 transition-colors">
+                                    <td class="px-6 py-4 text-center font-medium text-gray-400">
+                                        <?php echo $row['id_transaksi']; ?>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="font-semibold text-gray-900">
+                                            <?php echo isset($row['nama']) ? $row['nama'] : '-'; ?>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="text-gray-700 italic">"<?php echo $row['judul_buku']; ?>"</div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="flex items-center gap-1">
+                                            <i data-feather="calendar" class="w-3 h-3 text-blue-400"></i>
+                                            <?php echo date('d M Y', strtotime($row['tanggal_pinjam'])); ?>
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="flex items-center gap-1">
+                                            <i data-feather="calendar" class="w-3 h-3 text-red-300"></i>
+                                            <?php echo date('d M Y', strtotime($row['tanggal_kembali'])); ?>
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <span
+                                            class="px-3 py-1 rounded-full text-xs font-bold uppercase <?php echo $status_class; ?>">
+                                            <?php echo $row['status']; ?>
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <?php if ($row['status'] != 'selesai') { ?>
+                                            <a href="../aksi/aksi_selesai.php?id=<?php echo $row['id_transaksi']; ?>"
+                                                onclick="return confirm('Tandai sebagai selesai?')"
+                                                class="px-3 py-1 bg-blue-500 text-white rounded-lg text-xs hover:bg-blue-600">
+                                                Selesai
+                                            </a>
+                                        <?php } else { ?>
+                                            <span class="text-blue-600 font-semibold text-xs">Selesai</span>
+                                        <?php } ?>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center justify-center gap-2">
+                                            <a href="edit_transaksi.php?id_transaksi=<?php echo $row['id_transaksi']; ?>
+                                            class=" p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-all"
+                                                title="Edit Transaksi">
+                                                <i data-feather="edit-2" class="w-4 h-4"></i>
+                                            </a>
+                                            <a href="../aksi/aksi_hapus_transaksi.php?id_transaksi=<?php echo $row['id_transaksi']; ?>
+                                            onclick=" return confirm('Yakin ingin menghapus data transaksi ini?')"
+                                                class="p-2 text-red-500 hover        :bg-red-50 rounded-lg transition-all"
+                                                title="Hapus">
+                                                <i data-feather="trash-2" class="w-4 h-4"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <?php
+                            }
+                            mysqli_close($koneksi);
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+                <d class="justify-end">
+                    <a href="transaksi_selesai.php"
+                        class="mt-8 w-60 p-4 flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-x ml-auto transition-all shadow-md hover:shadow-lg">
+                        <i data-feather="archive"></i>
+                        Riwayat Transaksi
+                    </a>
+                    </div>
+            </section>
     </main>
 
     <script>
