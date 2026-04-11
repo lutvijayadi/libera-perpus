@@ -46,8 +46,7 @@ if (!$result) {
 
 <head>
     <title>Transaksi Selesai</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/feather-icons"></script>
+    <link rel="stylesheet" href="../public/src/output.css">
 </head>
 
 <body class="bg-[#B0FFFA] p-6">
@@ -55,34 +54,40 @@ if (!$result) {
     <!-- HEADER -->
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
-            <i data-feather="archive"></i>
             Transaksi Selesai
         </h2>
     </div>
 
-    <!-- SEARCH + CETAK -->
-    <div class="flex justify-between items-center mb-4 flex-wrap gap-3">
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
 
-        <form method="GET" class="flex items-center gap-2">
-            <input type="text" name="cari" placeholder="Cari nama / buku..."
-                value="<?= isset($_GET['cari']) ? htmlspecialchars($_GET['cari']) : ''; ?>"
-                class="px-4 py-2 rounded-lg border border-gray-300 text-sm w-64">
+        <div class="flex items-center gap-3 w-full md:w-auto">
+            <form method="GET"
+                class="flex items-center gap-2 bg-white p-1.5 pl-4 rounded-xl shadow-sm border border-gray-100 w-full md:w-auto">
+                <img src="../public/src/icons/search.png" class="w-4 h-4 opacity-40">
 
-            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm">
-                Cari
-            </button>
+                <input type="text" name="cari" placeholder="Cari nama / buku..."
+                    value="<?= isset($_GET['cari']) ? htmlspecialchars($_GET['cari']) : ''; ?>"
+                    class="text-sm outline-none w-56 bg-transparent text-gray-700">
 
-            <!-- FIX RESET -->
-            <a href="transaksi_selesai.php"
-                class="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 text-sm">
-                Reset
-            </a>
-        </form>
+                <button type="submit"
+                    class="px-4 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-700 transition-all shadow-md shadow-blue-100">
+                    Cari
+                </button>
+
+                <?php if (isset($_GET['cari']) && $_GET['cari'] != ''): ?>
+                    <a href="transaksi_selesai.php"
+                        class="px-3 py-1.5 bg-gray-100 text-gray-500 rounded-lg text-xs font-semibold hover:bg-gray-200 transition-colors mr-1">
+                        Reset
+                    </a>
+                <?php endif; ?>
+            </form>
+        </div>
+
         <a href="../resources/cetak/cetak_selesai_transaksi.php?cari=<?= isset($_GET['cari']) ? urlencode($_GET['cari']) : '' ?>"
             target="_blank"
-            class="flex items-center gap-2 px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm">
-           <img src="../resources/img/cetak.png" class="w-5 h-5 opacity-80">
-            Cetak
+            class="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100 text-sm">
+            <img src="../resources/img/cetak.png" class="w-4 h-4 brightness-0 invert">
+            <span>Cetak Laporan</span>
         </a>
 
     </div>
@@ -133,11 +138,11 @@ if (!$result) {
                                 <td class="px-6 py-4 text-xs">
                                     <div class="flex flex-col gap-1">
                                         <span class="flex items-center gap-1 text-blue-500">
-                                            
+
                                             <?= date('d M Y', strtotime($row['tanggal_pinjam'])); ?>
                                         </span>
                                         <span class="flex items-center gap-1 text-red-400">
-                                            
+
                                             <?= date('d M Y', strtotime($row['tanggal_kembali'])); ?>
                                         </span>
                                     </div>
@@ -169,9 +174,6 @@ if (!$result) {
             </a>
             </div>
     </section>
-    <script>
-        feather.replace();
-    </script>
 </body>
 
 </html>

@@ -24,12 +24,8 @@ $query_notif = mysqli_query($koneksi, "SELECT * FROM notif ORDER BY created_at D
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/feather-icons"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&family=Poppins:wght@100..900&display=swap"
-        rel="stylesheet">
+   <link rel="stylesheet" href="../public/src/output.css">
+   
     <title>Notifikasi - Libera Admin</title>
 </head>
 
@@ -40,7 +36,7 @@ $query_notif = mysqli_query($koneksi, "SELECT * FROM notif ORDER BY created_at D
     <!-- KONTEN UTAMA -->
     <main class="ml-60 p-4 min-h-screen">
         <section>
-            <div class="mt-6 bg-gradient-to-r from-blue-600 to-blue-500 p-6 rounded-xl shadow text-white">
+            <div class="mt-6 bg-linear-to-r from-[#2563eb] to-[#3b82f6] p-6 rounded-xl shadow text-white">
                 <h2 class="text-2xl font-semibold mb-1">
                     Notifikasi
                 </h2>
@@ -91,11 +87,6 @@ $query_notif = mysqli_query($koneksi, "SELECT * FROM notif ORDER BY created_at D
             </div>
         </section>
     </main>
-
-    <script>
-        feather.replace();
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
 </body>
 
 </html>

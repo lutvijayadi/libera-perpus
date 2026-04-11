@@ -33,5 +33,5 @@ $message = mysqli_real_escape_string($koneksi, $message);
 mysqli_query($koneksi, "INSERT INTO notif (id_transaksi, message) 
 VALUES ('$id_transaksi', '$message')");
 
-echo "<script>alert('Buku berhasil dikembalikan');window.location='../user/dashboard_user.php';</script>";
+echo "<script>alert('Buku berhasil dikembalikan');window.location='../user/notif_status.php';</script>";
 ?>

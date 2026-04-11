@@ -9,7 +9,7 @@ if (!isset($_GET['id']) || empty($_GET['id'])) {
 
 $id = $_GET['id'];
 
-// QUERY BERDASARKAN ID (BENAR)
+// QUERY BERDASARKAN ID
 $query = mysqli_query($koneksi, "SELECT * FROM users WHERE id_users = '$id'");
 $data = mysqli_fetch_assoc($query);
 
@@ -21,19 +21,12 @@ if (!$data) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Tailwind -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-
-    <!-- Feather -->
-    <script src="https://unpkg.com/feather-icons"></script>
-
+    <link rel="stylesheet" href="../public/src/output.css">
     <title>Edit Anggota</title>
 </head>
 
@@ -43,8 +36,8 @@ if (!$data) {
     <div class="relative z-10 w-full max-w-md bg-white/90 backdrop-blur-md rounded-2xl shadow-xl overflow-hidden">
 
         <!-- HEADER -->
-        <div class="bg-gradient-to-r from-blue-600 to-blue-500 p-5 text-white flex items-center gap-3">
-            <i data-feather="edit"></i>
+        <div class="bg-linear-to-r from-blue-600 to-blue-500 p-5 text-white flex items-center gap-3">
+            <img src="../resources/img/anggota.png" class="w-5 h-5">
             <h2 class="text-lg font-semibold">Edit Anggota</h2>
         </div>
 
@@ -59,7 +52,7 @@ if (!$data) {
                 <!-- NAMA -->
                 <div>
                     <label class="text-sm flex items-center gap-2 mb-1">
-                        <i data-feather="user"></i> Nama
+                        <img src="../resources/img/profil.png" class="w-4 h-4"> Nama
                     </label>
                     <input type="text" name="nama" value="<?= $data['nama']; ?>" required
                         class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400">
@@ -68,7 +61,7 @@ if (!$data) {
                 <!-- KELAS -->
                 <div>
                     <label class="text-sm flex items-center gap-2 mb-1">
-                        <i data-feather="book"></i> Kelas
+                        <img src="../resources/img/kelas.png" class="w-4 h-4"> Kelas
                     </label>
                     <input type="text" name="kelas" value="<?= $data['kelas']; ?>" required
                         class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400">
@@ -77,28 +70,32 @@ if (!$data) {
                 <!-- STATUS -->
                 <div>
                     <label class="text-sm flex items-center gap-2 mb-1">
-                        <i data-feather="check-circle"></i> Status
+                        <img src="../resources/img/status.png" class="w-4 h-4"> Status
                     </label>
                     <select name="status" class="w-full p-2 border rounded-lg">
-                        <option value="aktif" <?= $data['status']=='aktif'?'selected':''; ?>>Aktif</option>
-                        <option value="non-aktif" <?= $data['status']=='non-aktif'?'selected':''; ?>>Non Aktif</option>
+                        <option value="aktif" <?= $data['status'] == 'aktif' ? 'selected' : ''; ?>>Aktif</option>
+                        <option value="non-aktif" <?= $data['status'] == 'non-aktif' ? 'selected' : ''; ?>>Non Aktif
+                        </option>
                     </select>
                 </div>
 
-                <!-- BUTTON -->
-                <button type="submit" name="edit"
-                    class="w-full bg-blue-600 text-white py-3 rounded-xl hover:bg-blue-700 transition flex items-center justify-center gap-2">
-                    <i data-feather="save"></i> Simpan Perubahan
-                </button>
+                <div class="flex gap-3 pt-2">
+                    <a href="kelola_anggota.php"
+                        class="flex-1 border-2 border-blue-300 text-blue-600 py-3 rounded-xl hover:bg-gray-50 transition flex items-center justify-center gap-2 font-medium">
+                        Batal
+                    </a>
+
+                    <button type="submit" name="edit"
+                        class="flex-2 bg-blue-600 text-white py-3 rounded-xl hover:bg-blue-700 transition shadow-lg flex items-center justify-center gap-2 font-semibold group">
+                        <span>Simpan Perubahan</span>
+                    </button>
+                </div>
 
             </form>
 
         </div>
     </div>
 
-    <script>
-        feather.replace();
-    </script>
-
 </body>
+
 </html>

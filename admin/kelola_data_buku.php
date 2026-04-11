@@ -32,11 +32,7 @@ $query_buku = mysqli_query($koneksi, $query);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/feather-icons"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&family=Poppins:wght@100..900&display=swap"
-        rel="stylesheet">
+    <link rel="stylesheet" href="../public/src/output.css">
     <title>libera data buku</title>
 </head>
 
@@ -47,7 +43,7 @@ $query_buku = mysqli_query($koneksi, $query);
     <!-- konten utama -->
     <main class="ml-60 p-4 min-h-screen">
         <section>
-            <div class="mt-6 bg-gradient-to-r from-blue-600 to-blue-500 p-6 rounded-xl shadow text-white">
+            <div class="mt-6 bg-linear-to-r from-[#2563eb] to-[#3b82f6] p-6 rounded-xl shadow text-white">
                 <h2 class="text-2xl font-semibold mb-1 flex items-center gap-2">
                     <i data-feather="book-open"></i>
                     Kelola Data Buku
@@ -61,39 +57,50 @@ $query_buku = mysqli_query($koneksi, $query);
 
                 <h2 class="text-xl font-bold text-gray-800">DAFTAR BUKU</h2>
 
-                <!-- FORM FILTER -->
-                <form method="GET" class="flex items-center gap-2 flex-wrap">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+                    <form method="GET"
+                        class="flex items-center gap-3 bg-white p-2 pl-4 rounded-2xl shadow-sm border border-gray-100 w-full md:w-auto">
 
-                    <input type="text" name="cari" placeholder="Cari buku..."
-                        value="<?= isset($_GET['cari']) ? htmlspecialchars($_GET['cari']) : ''; ?>"
-                        class="px-4 py-2 rounded-lg border border-gray-300 text-sm w-48 focus:ring-2 focus:ring-blue-400">
+                        <div class="flex items-center gap-2 border-r border-gray-100 pr-3">
+                            <img src="../public/src/icons/search.png" class="w-4 h-4 opacity-40">
+                            <input type="text" name="cari" placeholder="Cari buku..."
+                                value="<?= isset($_GET['cari']) ? htmlspecialchars($_GET['cari']) : ''; ?>"
+                                class="text-sm outline-none bg-transparent w-40 text-gray-700">
+                        </div>
 
-                    <select name="kategori"
-                        class="px-4 py-2 rounded-lg border border-gray-300 text-sm focus:ring-2 focus:ring-blue-400">
-                        <option value="">Semua</option>
-                        <option value="pelajaran" <?= ($kategori == 'pelajaran') ? 'selected' : '' ?>>Pelajaran</option>
-                        <option value="novel" <?= ($kategori == 'novel') ? 'selected' : '' ?>>Novel</option>
-                        <option value="cerita" <?= ($kategori == 'cerita') ? 'selected' : '' ?>>Cerita</option>
-                        <option value="filsafat" <?= ($kategori == 'filsafat') ? 'selected' : '' ?>>Filsafat</option>
-                    </select>
+                        <div class="flex items-center gap-2">
+                            <select name="kategori"
+                                class="text-xs bg-transparent outline-none cursor-pointer text-gray-500 font-medium">
+                                <option value="">Semua Kategori</option>
+                                <option value="pelajaran" <?= (isset($kategori) && $kategori == 'pelajaran') ? 'selected' : '' ?>>Pelajaran</option>
+                                <option value="novel" <?= (isset($kategori) && $kategori == 'novel') ? 'selected' : '' ?>>
+                                    Novel</option>
+                                <option value="cerita" <?= (isset($kategori) && $kategori == 'cerita') ? 'selected' : '' ?>>Cerita</option>
+                                <option value="filsafat" <?= (isset($kategori) && $kategori == 'filsafat') ? 'selected' : '' ?>>Filsafat</option>
+                            </select>
+                        </div>
 
-                    <button type="submit"
-                        class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 flex items-center gap-1">
-                        <i data-feather="search"></i> Cari
-                    </button>
+                        <div class="flex gap-1 ml-2">
+                            <button type="submit"
+                                class="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-semibold hover:bg-blue-700 transition-all shadow-md shadow-blue-100 flex items-center gap-1">
+                                Cari
+                            </button>
 
-                    <a href="kelola_data_buku.php"
-                        class="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 text-sm">
-                        Reset
+                            <?php if (!empty($_GET['cari']) || !empty($_GET['kategori'])): ?>
+                                <a href="kelola_data_buku.php"
+                                    class="px-4 py-2 bg-gray-100 text-gray-500 rounded-xl text-xs font-semibold hover:bg-gray-200 transition-colors">
+                                    Reset
+                                </a>
+                            <?php endif; ?>
+                        </div>
+                    </form>
+
+                    <a href="../admin/tambah_buku.php"
+                        class="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all hover:-translate-y-0.5 text-sm">
+                        <img src="../resources/img/tambah.png" class="w-4 h-4 brightness-0 invert">
+                        <span>Tambah Buku</span>
                     </a>
-                </form>
-
-                <!-- TOMBOL TAMBAH -->
-                <a href="../admin/tambah_buku.php"
-                    class="flex items-center gap-2 px-5 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 shadow-md text-sm">
-                   <img src="../resources/img/tambah.png" class="w-5 h-5 opacity-80">
-                    Tambah
-                </a>
+                </div>
 
             </div>
         </section>
@@ -150,13 +157,13 @@ $query_buku = mysqli_query($koneksi, $query);
                             <!-- BUTTON -->
                             <div class="flex gap-2 pt-2">
                                 <a href="edit_buku.php?id=<?php echo $buku['id_buku']; ?>"
-                                    class="flex-1 text-center text-sm bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 flex items-center justify-center gap-1">                       
+                                    class="flex-1 text-center text-sm bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 flex items-center justify-center gap-1">
                                     Edit
                                 </a>
 
                                 <a href="../aksi/aksi_hapus_buku.php?id=<?php echo $buku['id_buku']; ?>"
                                     onclick="return confirm('Hapus buku ini?')"
-                                    class="flex-1 text-center text-sm bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 flex items-center justify-center gap-1">                                  
+                                    class="flex-1 text-center text-sm bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 flex items-center justify-center gap-1">
                                     Hapus
                                 </a>
                             </div>
@@ -169,9 +176,6 @@ $query_buku = mysqli_query($koneksi, $query);
             </div>
         </section>
     </main>
-    <script>
-        feather.replace();
-    </script>
 </body>
 
 </html>

@@ -59,7 +59,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 <div
                     class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white border border-white/30">
                     <img src="../resources/img/profil.png"
-                        class="w-10 h-10 mb-2 flex-shrink-0 <?php echo ($current_page == 'transaksi.php') ? '' : 'opacity-80 group-hover:opacity-100'; ?>">
+                        class="w-10 h-10 mb-2 flex-0 <?php echo ($current_page == 'transaksi.php') ? '' : 'opacity-80 group-hover:opacity-100'; ?>">
                 </div>
                 <div class="ml-3 overflow-hidden">
                     <p class="text-sm font-bold text-white truncate"><?php echo $_SESSION['username'] ?? 'Admin'; ?></p>

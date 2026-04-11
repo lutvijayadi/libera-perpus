@@ -55,7 +55,7 @@ if ($query) {
     SET stok = stok - $total_pinjam 
     WHERE id_buku='$id_buku'");
 
-    echo "<script>alert('Berhasil pinjam buku');window.location='../user/dashboard_user.php';</script>";
+    echo "<script>alert('Berhasil pinjam buku');window.location='../user/notif_status';</script>";
 
 } else {
     echo "Gagal: " . mysqli_error($koneksi);

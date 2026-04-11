@@ -34,7 +34,7 @@ $result = mysqli_query($koneksi, $query);
     <title>Cetak Transaksi Selesai</title>
 
     <!-- Tailwind -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../public/src/output.css">
 
     <!-- Font -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">

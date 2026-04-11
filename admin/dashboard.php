@@ -18,7 +18,14 @@ $query = mysqli_query(
 );
 $user = mysqli_fetch_assoc($query);
 
+// hitung total anggota (level siswa)
+$data_anggota = mysqli_query($koneksi, "
+    SELECT COUNT(*) as total 
+    FROM users 
+    WHERE level='siswa'
+");
 
+$data_anggota = mysqli_fetch_assoc($data_anggota);
 $query_aktivitas = mysqli_query($koneksi, "
     SELECT p.*, u.nama, p.judul_buku
     FROM transaksi p
@@ -71,7 +78,39 @@ $query_pengunjung_bulan = mysqli_query($koneksi, "
 ");
 
 $data_pengunjung = mysqli_fetch_assoc($query_pengunjung_bulan);
+
+// ambil data per bulan
+$data_bulanan = mysqli_query($koneksi, "
+    SELECT MONTH(created_at) as bulan, COUNT(*) as jumlah 
+    FROM users 
+    GROUP BY MONTH(created_at)
+");
+
+// simpan ke array
+$bulan = [];
+$jumlah = [];
+
+while ($row = mysqli_fetch_assoc($data_bulanan)) {
+    $bulan[] = $row['bulan'];
+    $jumlah[] = $row['jumlah'];
+}
+// grafik peminjaman per bulan
+$peminjaman = mysqli_query($koneksi, "
+    SELECT MONTH(tanggal_pinjam) as bulan, COUNT(*) as jumlah 
+    FROM transaksi 
+    GROUP BY MONTH(tanggal_pinjam)
+");
+
+// simpan ke array
+$bulan_pinjam = [];
+$jumlah_pinjam = [];
+
+while ($row = mysqli_fetch_assoc($peminjaman)) {
+    $bulan_pinjam[] = $row['bulan'];
+    $jumlah_pinjam[] = $row['jumlah'];
+}
 ?>
+
 
 
 <!DOCTYPE html>
@@ -80,15 +119,10 @@ $data_pengunjung = mysqli_fetch_assoc($query_pengunjung_bulan);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <script src="https://unpkg.com/feather-icons"></script>
+    <link rel="stylesheet" href="../public/src/output.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&family=Poppins:wght@100..900&display=swap"
-        rel="stylesheet">
     <title>libera admin</title>
 </head>
 
@@ -101,7 +135,7 @@ $data_pengunjung = mysqli_fetch_assoc($query_pengunjung_bulan);
     <main class="ml-60 p-4 min-h-screen">
         <section>
             <div
-                class="mt-6 bg-gradient-to-r from-blue-600 to-blue-500 p-6 rounded-xl shadow text-white flex items-center justify-between">
+                class="mt-6 bg-linear-to-r from-[#2563eb] to-[#3b82f6] p-6 rounded-xl shadow text-white flex items-center justify-between">
                 <div>
                     <h2 class="text-2xl font-semibold mb-1 flex items-center gap-2">
                         <img src="../resources/img/profil.png" class="w-6 h-6 brightness-0 invert">
@@ -111,7 +145,7 @@ $data_pengunjung = mysqli_fetch_assoc($query_pengunjung_bulan);
                         Selamat datang di dashboard admin Libera. Kelola data perpustakaan dengan mudah.
                     </p>
                 </div>
-                
+
             </div>
         </section>
 
@@ -182,156 +216,19 @@ $data_pengunjung = mysqli_fetch_assoc($query_pengunjung_bulan);
 
         <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
 
-            <!-- Grafik Pengunjung -->
-            <div class="bg-white rounded-xl shadow p-6 hover:shadow-lg transition">
-                <h2 class="text-lg font-semibold text-gray-700 mb-4">
-                    Grafik Pengunjung Bulanan
+            <div class="bg-white rounded-xl shadow p-6">
+                <h2 class="text-lg font-semibold mb-4">
+                    Grafik Anggota Bulanan
                 </h2>
 
-
-                <div class="flex items-center mb-3">
-                    <div class="flex items-center space-x-1">
-                        <svg class="w-5 h-5 text-fg-yellow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                            width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-                        </svg>
-                        <svg class="w-5 h-5 text-fg-yellow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                            width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-                        </svg>
-                        <svg class="w-5 h-5 text-fg-yellow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                            width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-                        </svg>
-                        <svg class="w-5 h-5 text-fg-yellow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                            width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-                        </svg>
-                        <svg class="w-5 h-5 text-fg-disabled" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                            width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-                        </svg>
-                    </div>
-                    <p class="ms-2 text-sm font-medium text-body">4.95 out of 5</p>
-                </div>
-                <p class="text-sm font-medium text-body">1,745 global ratings</p>
-                <div class="flex items-center mt-4">
-                    <a href="#" class="text-sm font-medium text-fg-brand hover:underline w-14">5 star</a>
-                    <div class="w-2/4 h-4 mx-4 bg-neutral-quaternary rounded-base">
-                        <div class="h-4 bg-warning rounded-base" style="width: 70%"></div>
-                    </div>
-                    <span class="text-sm font-medium text-body">70%</span>
-                </div>
-                <div class="flex items-center mt-4">
-                    <a href="#" class="text-sm font-medium text-fg-brand hover:underline w-14">4 star</a>
-                    <div class="w-2/4 h-4 mx-4 bg-neutral-quaternary rounded-base">
-                        <div class="h-4 bg-warning rounded-base" style="width: 17%"></div>
-                    </div>
-                    <span class="text-sm font-medium text-body">17%</span>
-                </div>
-                <div class="flex items-center mt-4">
-                    <a href="#" class="text-sm font-medium text-fg-brand hover:underline w-14">3 star</a>
-                    <div class="w-2/4 h-4 mx-4 bg-neutral-quaternary rounded-base">
-                        <div class="h-4 bg-warning rounded-base" style="width: 8%"></div>
-                    </div>
-                    <span class="text-sm font-medium text-body">8%</span>
-                </div>
-                <div class="flex items-center mt-4">
-                    <a href="#" class="text-sm font-medium text-fg-brand hover:underline w-14">2 star</a>
-                    <div class="w-2/4 h-4 mx-4 bg-neutral-quaternary rounded-base">
-                        <div class="h-4 bg-warning rounded-base" style="width:4%"></div>
-                    </div>
-                    <span class="text-sm font-medium text-body">4%</span>
-                </div>
-                <div class="flex items-center mt-4">
-                    <a href="#" class="text-sm font-medium text-fg-brand hover:underline w-14">1 star</a>
-                    <div class="w-2/4 h-4 mx-4 bg-neutral-quaternary rounded-base">
-                        <div class="h-4 bg-warning rounded-base" style="width:1%"></div>
-                    </div>
-                    <span class="text-sm font-medium text-body">1%</span>
-                </div>
+                <canvas id="chartAnggota"></canvas>
             </div>
-
-            <!-- Grafik Peminjaman -->
             <div class="bg-white rounded-xl shadow p-6">
                 <h2 class="text-lg font-semibold text-gray-700 mb-4">
                     Grafik Peminjaman Bulanan
                 </h2>
 
-
-                <div class="flex items-center mb-3">
-                    <div class="flex items-center space-x-1">
-                        <svg class="w-5 h-5 text-fg-yellow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                            width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-                        </svg>
-                        <svg class="w-5 h-5 text-fg-yellow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                            width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-                        </svg>
-                        <svg class="w-5 h-5 text-fg-yellow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                            width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-                        </svg>
-                        <svg class="w-5 h-5 text-fg-yellow" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                            width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-                        </svg>
-                        <svg class="w-5 h-5 text-fg-disabled" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                            width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-                        </svg>
-                    </div>
-                    <p class="ms-2 text-sm font-medium text-body">4.95 out of 5</p>
-                </div>
-                <p class="text-sm font-medium text-body">1,745 global ratings</p>
-                <div class="flex items-center mt-4">
-                    <a href="#" class="text-sm font-medium text-fg-brand hover:underline w-14">5 star</a>
-                    <div class="w-2/4 h-4 mx-4 bg-neutral-quaternary rounded-base">
-                        <div class="h-4 bg-warning rounded-base" style="width: 70%"></div>
-                    </div>
-                    <span class="text-sm font-medium text-body">70%</span>
-                </div>
-                <div class="flex items-center mt-4">
-                    <a href="#" class="text-sm font-medium text-fg-brand hover:underline w-14">4 star</a>
-                    <div class="w-2/4 h-4 mx-4 bg-neutral-quaternary rounded-base">
-                        <div class="h-4 bg-warning rounded-base" style="width: 17%"></div>
-                    </div>
-                    <span class="text-sm font-medium text-body">17%</span>
-                </div>
-                <div class="flex items-center mt-4">
-                    <a href="#" class="text-sm font-medium text-fg-brand hover:underline w-14">3 star</a>
-                    <div class="w-2/4 h-4 mx-4 bg-neutral-quaternary rounded-base">
-                        <div class="h-4 bg-warning rounded-base" style="width: 8%"></div>
-                    </div>
-                    <span class="text-sm font-medium text-body">8%</span>
-                </div>
-                <div class="flex items-center mt-4">
-                    <a href="#" class="text-sm font-medium text-fg-brand hover:underline w-14">2 star</a>
-                    <div class="w-2/4 h-4 mx-4 bg-neutral-quaternary rounded-base">
-                        <div class="h-4 bg-warning rounded-base" style="width:4%"></div>
-                    </div>
-                    <span class="text-sm font-medium text-body">4%</span>
-                </div>
-                <div class="flex items-center mt-4">
-                    <a href="#" class="text-sm font-medium text-fg-brand hover:underline w-14">1 star</a>
-                    <div class="w-2/4 h-4 mx-4 bg-neutral-quaternary rounded-base">
-                        <div class="h-4 bg-warning rounded-base" style="width:1%"></div>
-                    </div>
-                    <span class="text-sm font-medium text-body">1%</span>
-                </div>
-
-            </div>
+                <canvas id="chartPeminjaman"></canvas>
             </div>
 
         </section>
@@ -339,52 +236,50 @@ $data_pengunjung = mysqli_fetch_assoc($query_pengunjung_bulan);
     </main>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        const ctx = document.getElementById('chartAnggota');
 
-            // Grafik Pengunjung
-            var chart1 = new ApexCharts(document.querySelector("#chartPengunjung"), {
-                chart: {
-                    type: 'line',
-                    height: 250
-                },
-                series: [{
-                    name: 'Pengunjung',
-                    data: <?php echo json_encode($total); ?>
-                }],
-                xaxis: {
-                    categories: <?php echo json_encode($bulan); ?>
-                },
-                stroke: {
-                    curve: 'smooth'
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: <?= json_encode($bulan); ?>,
+                datasets: [{
+                    label: 'Jumlah Anggota',
+                    data: <?= json_encode($jumlah); ?>,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
                 }
-            });
-            chart1.render();
-
-
-            // Grafik Peminjaman
-            var chart2 = new ApexCharts(document.querySelector("#chartPeminjaman"), {
-                chart: {
-                    type: 'bar',
-                    height: 250
-                },
-                series: [{
-                    name: 'Peminjaman',
-                    data: <?php echo json_encode($total_pinjam); ?>
-                }],
-                xaxis: {
-                    categories: <?php echo json_encode($bulan_pinjam); ?>
-                }
-            });
-            chart2.render();
-
+            }
         });
     </script>
-    <!-- akhir conten -->
-
     <script>
-        feather.replace();
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
+const ctxPinjam = document.getElementById('chartPeminjaman');
+
+new Chart(ctxPinjam, {
+    type: 'line', // bisa ganti: bar / line
+    data: {
+        labels: <?= json_encode($bulan_pinjam); ?>,
+        datasets: [{
+            label: 'Jumlah Peminjaman',
+            data: <?= json_encode($jumlah_pinjam); ?>,
+            borderWidth: 2,
+            tension: 0.3
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script>
 </body>
 
 </html>

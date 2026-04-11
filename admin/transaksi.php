@@ -38,9 +38,8 @@ $result = mysqli_query($koneksi, $query);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/feather-icons"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../public/src/output.css">
+
     <title>Libera Transaksi</title>
     <style>
         body {
@@ -54,7 +53,7 @@ $result = mysqli_query($koneksi, $query);
 
     <main class="ml-60 p-4 min-h-screen">
         <section>
-            <div class="mt-6 bg-gradient-to-r from-blue-600 to-blue-500 p-6 rounded-xl shadow text-white">
+            <div class="mt-6 bg-linear-to-r from-[#2563eb] to-[#3b82f6] p-6 rounded-xl shadow text-white">
                 <h2 class="text-2xl font-semibold mb-1">
                     Kelola Transaksi
                 </h2>
@@ -62,29 +61,39 @@ $result = mysqli_query($koneksi, $query);
                     silakan kelola transaksi peminjaman dan pengembalian buku anggota perpustakaan.
                 </p>
             </div>
-            <div class="mt-8 flex justify-between items-center mb-6">
-                <h2 class="text-xl font-bold text-gray-800">DAFTAR TRANSAKSI</h2>
-                <form method="GET" class="mb-4 flex items-center gap-2">
-                    <input type="text" name="cari" placeholder="Cari nama buku..."
-                        value="<?php echo isset($_GET['cari']) ? htmlspecialchars($_GET['cari']) : ''; ?>"
-                        class="px-4 py-2 rounded-lg border border-gray-300 text-sm w-64">
+            <div class="mt-8 flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+                <h2 class="text-xl font-bold text-gray-800 tracking-tight uppercase">Daftar Transaksi</h2>
 
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm">
-                        Cari
-                    </button>
+                <div class="flex flex-wrap items-center gap-3">
+                    <form method="GET"
+                        class="flex items-center gap-2 bg-white p-1.5 pl-4 rounded-xl shadow-sm border border-gray-100">
+                        <img src="../public/src/icons/search.png" class="w-4 h-4 opacity-40">
 
-                    <a href="transaksi.php"
-                        class="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 text-sm">
-                        Reset
-                    </a>
-                </form>
-                <div class="flex gap-2">
-                    <a href="../resources/cetak/cetak_transaksi.php?cari=<?php echo isset($_GET['cari']) ? urlencode($_GET['cari']) : ''; ?>"
-                        target="_blank"
-                        class="flex items-center gap-2 px-5 py-2.5 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-all shadow-md hover:shadow-lg text-sm">
-                        <img src="../resources/img/cetak.png" class="w-5 h-5 opacity-80">
-                        Cetak
-                    </a>
+                        <input type="text" name="cari" placeholder="Cari judul buku..."
+                            value="<?php echo isset($_GET['cari']) ? htmlspecialchars($_GET['cari']) : ''; ?>"
+                            class="text-sm outline-none w-56 bg-transparent text-gray-700">
+
+                        <button type="submit"
+                            class="px-4 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-700 transition-all shadow-md shadow-blue-100">
+                            Cari
+                        </button>
+
+                        <?php if (isset($_GET['cari']) && $_GET['cari'] != ''): ?>
+                            <a href="transaksi.php"
+                                class="px-3 py-1.5 bg-gray-100 text-gray-500 rounded-lg text-xs font-semibold hover:bg-gray-200 transition-colors mr-1">
+                                Reset
+                            </a>
+                        <?php endif; ?>
+                    </form>
+
+                    <div class="flex gap-2">
+                        <a href="../resources/cetak/cetak_transaksi.php?cari=<?php echo isset($_GET['cari']) ? urlencode($_GET['cari']) : ''; ?>"
+                            target="_blank"
+                            class="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100 text-sm">
+                            <img src="../resources/img/cetak.png" class="w-4 h-4 brightness-0 invert">
+                            <span>Cetak Laporan</span>
+                        </a>
+                    </div>
                 </div>
             </div>
 
@@ -159,18 +168,21 @@ $result = mysqli_query($koneksi, $query);
                                         <?php } ?>
                                     </td>
                                     <td class="px-6 py-4">
-                                        <div class="flex items-center justify-center gap-2">
-                                            <a href="edit_transaksi.php?id_transaksi=<?php echo $row['id_transaksi']; ?>
-                                            class=" p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-all"
+                                        <div class="flex items-center justify-center gap-1.5">
+
+                                            <a href="edit_transaksi.php?id_transaksi=<?= $row['id_transaksi'] ?>"
+                                                class="p-2 text-blue-600 hover:bg-blue-100/70 rounded-lg transition-all"
                                                 title="Edit Transaksi">
-                                                <i data-feather="edit-2" class="w-4 h-4"></i>
+                                                <img src="../resources/img/edit.png" class="w-4 h-4 opacity-70">
                                             </a>
-                                            <a href="../aksi/aksi_hapus_transaksi.php?id_transaksi=<?php echo $row['id_transaksi']; ?>
-                                            onclick=" return confirm('Yakin ingin menghapus data transaksi ini?')"
-                                                class="p-2 text-red-500 hover        :bg-red-50 rounded-lg transition-all"
+
+                                            <a href="../aksi/aksi_hapus_transaksi.php?id_transaksi=<?= $row['id_transaksi'] ?>"
+                                                onclick="return confirm('Yakin ingin menghapus data transaksi ini?')"
+                                                class="p-2 text-rose-500 hover:bg-rose-100/70 rounded-lg transition-all"
                                                 title="Hapus">
-                                                <i data-feather="trash-2" class="w-4 h-4"></i>
+                                                <img src="../resources/img/hapus2.png" class="w-4 h-4 opacity-70">
                                             </a>
+
                                         </div>
                                     </td>
                                 </tr>
@@ -181,7 +193,7 @@ $result = mysqli_query($koneksi, $query);
                         </tbody>
                     </table>
                 </div>
-                <d class="justify-end">
+                <div class="justify-end">
                     <a href="transaksi_selesai.php"
                         class="mt-8 w-60 p-4 flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-x ml-auto transition-all shadow-md hover:shadow-lg">
                         <img src="../resources/img/riwayat.png" class="w-5 h-5 opacity-80">
@@ -190,10 +202,6 @@ $result = mysqli_query($koneksi, $query);
                     </div>
             </section>
     </main>
-
-    <script>
-        feather.replace();
-    </script>
 </body>
 
 </html>
